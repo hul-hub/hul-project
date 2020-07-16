@@ -41,7 +41,7 @@
         header-cell-class-name="table-header"
       >
         <el-table-column type="index" width="70" label="序号" align="center"></el-table-column>
-        <el-table-column prop="rolename" label="角色名称" align="center"></el-table-column>
+        <el-table-column prop="rolename" label="订单号" align="center"></el-table-column>
         <el-table-column prop="createtime" label="创建时间" align="center"></el-table-column>
         <el-table-column prop="createName" label="创建人" align="center"></el-table-column>
       </el-table>
