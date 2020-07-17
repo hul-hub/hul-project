@@ -12,6 +12,12 @@
             <el-col :span="18">
               <el-row justify="end" type="flex">
                 <el-button type="primary" icon="el-icon-search" size="small" @click="queryFun">查询</el-button>
+                <el-button
+                  type="primary"
+                  icon="el-icon-refresh-left"
+                  size="small"
+                  @click="refreshFun"
+                >重置</el-button>
               </el-row>
             </el-col>
           </el-row>
@@ -41,10 +47,36 @@
         header-cell-class-name="table-header"
       >
         <el-table-column type="index" width="70" label="序号" align="center"></el-table-column>
-        <el-table-column prop="rolename" label="订单号" align="center"></el-table-column>
-        <el-table-column prop="createtime" label="创建时间" align="center"></el-table-column>
-        <el-table-column prop="createName" label="创建人" align="center"></el-table-column>
+        <el-table-column prop="serProName" label="商户名称" align="center"></el-table-column>
+        <el-table-column prop="orderid" label="订单号" align="center"></el-table-column>
+        <el-table-column label="充值金额" align="center">
+          <template slot-scope="scope">{{scope.row.amount/100}}</template>
+        </el-table-column>
+        <el-table-column label="充值方式" align="center">
+          <template slot-scope="scope">
+            <span>{{scope.row.paytypecode | filterPaytype}}</span>
+            <span>{{scope.row.paywaycode | filterGetPayWay}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="finishtime" label="充值时间" align="center"></el-table-column>
+        <!-- <el-table-column label="充值状态" align="center">
+           <template slot-scope="scope">
+            <span>{{scope.row.status | filterOrderStatus}}</span>
+          </template>
+        </el-table-column>-->
       </el-table>
+      <div class="pagination">
+        <el-pagination
+          background
+          :current-page="pageInfo.pageIndex"
+          :page-size="pageInfo.pageSize"
+          :page-sizes="[10, 20, 50, 100]"
+          layout="total, prev, pager, next,sizes"
+          :total="pageInfo.total"
+          @current-change="handlePageChange"
+          @size-change="handleSizeChange"
+        ></el-pagination>
+      </div>
     </div>
     <template>
       <Modal v-model="moneyModal" :closable="false" :mask-closable="false" width="780" title="扫描充值">
@@ -106,7 +138,7 @@ export default {
       qrcodeUrl: "",
       moneyModal: false,
       query: {
-        serProCode: "5922218727791888"
+        serProCode: ""
       },
       rules: {
         serprocode: [
@@ -122,7 +154,7 @@ export default {
       pageInfo: {
         pageIndex: 1,
         pageSize: 10,
-        total: ""
+        total: 0
       },
       serItem: {
         serprocode: "",
@@ -204,9 +236,10 @@ export default {
       params["limit"] = that.pageInfo.pageSize;
       params["serprocode"] = that.query.serProCode;
       Server.post(Path.queryRechargeRecord, params, res => {
-        let { code, data, msg } = res;
+        let { code, data, msg, total } = res;
         if (code == 200) {
           that.tableData = data;
+          that.pageInfo.total = total;
         }
       });
     },
@@ -216,12 +249,102 @@ export default {
       return num.toString().substring(13 - m);
       num.toString().substring(13 - m);
     },
+    // 分页导航
+    handlePageChange(val) {
+      let that = this;
+      that.pageInfo.pageIndex = val;
+      that.pageInfo.pageSize = 10;
+      that.loadData();
+    },
+    // 更改分页大小
+    handleSizeChange(val) {
+      let that = this;
+      that.tableData = [];
+      that.pageInfo.pageIndex = 1;
+      that.pageInfo.pageSize = val;
+      that.loadData();
+    },
+    refreshFun: function() {
+      let that = this;
+      that.pageInfo.pageIndex = 1;
+      that.pageInfo.pageSize = 10;
+      that.query.serProCode = "";
+      that.loadData();
+    },
     queryFun: function() {
       let that = this;
       that.pageInfo.pageIndex = 1;
       that.pageInfo.pageSize = 10;
       that.loadData();
       that.loadBalance();
+    }
+  },
+  filters: {
+    filterPaytype(paytypecode) {
+      switch (paytypecode) {
+        case "01":
+          return "微信-";
+        case "02":
+          return "支付宝-";
+        case "03":
+          return "银联-";
+        case "04":
+          return "百度-";
+        case "05":
+          return "京东-";
+        case "06":
+          return "QQ钱包-";
+        default:
+          return "暂无-";
+      }
+    },
+    filterGetPayWay(payWayCode) {
+      switch (payWayCode) {
+        case "AP":
+          return "APP支付";
+        case "DF":
+          return "代付";
+        case "FK":
+          return "付款码支付";
+        case "FW":
+          return "服务窗支付";
+        case "GZ":
+          return "公众号支付";
+        case "H5":
+          return "H5支付";
+        case "KJ":
+          return "快捷支付";
+        case "SM":
+          return "扫码支付";
+        case "WG":
+          return "网关支付";
+        default:
+          return "支付方式未知";
+      }
+    },
+    filterOrderStatus(val) {
+      let payStatus = "";
+      switch (val) {
+        case "SUCCESS":
+          payStatus = "支付成功";
+          break;
+        case "REFUND":
+          payStatus = "转入退款";
+          break;
+        case "NOTPAY":
+          payStatus = "未支付";
+          break;
+        case "CLOSE":
+          payStatus = "已关闭";
+          break;
+        case "REVERSE":
+          payStatus = "已冲正";
+          break;
+        case "REVOK":
+          payStatus = "已撤销";
+          break;
+      }
+      return payStatus;
     }
   }
 };

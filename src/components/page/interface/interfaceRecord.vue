@@ -1,5 +1,29 @@
 <template>
   <div>
+    <div class="search">
+      <el-card class="box-card">
+        <el-form :model="query" label-width="80px" label-position="left" size="small">
+          <el-row :gutter="36" type="flex">
+            <el-col :span="6" style="margin: auto;">
+              <el-form-item label="商户编码:" class="query-form-item">
+                <el-input v-model="query.serProCode"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="18">
+              <el-row justify="end" type="flex">
+                <el-button type="primary" icon="el-icon-search" size="small" @click="queryFun">查询</el-button>
+                <el-button
+                  type="primary"
+                  icon="el-icon-refresh-left"
+                  size="small"
+                  @click="refreshFun"
+                >重置</el-button>
+              </el-row>
+            </el-col>
+          </el-row>
+        </el-form>
+      </el-card>
+    </div>
     <div class="container">
       <el-table
         :data="tableData"
@@ -9,9 +33,13 @@
         header-cell-class-name="table-header"
       >
         <el-table-column type="index" width="70" label="序号" align="center"></el-table-column>
-        <el-table-column prop="rolename" label="角色名称" align="center"></el-table-column>
-        <el-table-column prop="createtime" label="创建时间" align="center"></el-table-column>
-        <el-table-column prop="createName" label="创建人" align="center"></el-table-column>
+        <el-table-column prop="serProName" label="商户名称" align="center"></el-table-column>
+        <el-table-column prop="apiName" label="接口名称" align="center"></el-table-column>
+        <el-table-column prop="price" label="单价(厘)" align="center"></el-table-column>
+        <el-table-column prop="operatetime" label="调用时间" align="center"></el-table-column>
+        <el-table-column prop="rescontent" label="返回内容" align="center"></el-table-column>
+        <el-table-column prop="status" label="调用结果" align="center"></el-table-column>
+        <el-table-column prop="statusdec" label="调用结果描述" align="center"></el-table-column>
       </el-table>
       <div class="pagination">
         <el-pagination
@@ -37,6 +65,9 @@ export default {
   data() {
     return {
       tableData: [],
+      query: {
+        serProCode: ""
+      },
       pageInfo: {
         pageIndex: 1,
         pageSize: 10,
@@ -52,15 +83,28 @@ export default {
     loadData() {
       let that = this;
       let params = {};
-      params['pageNum'] = that.pageInfo.pageIndex;
-      params['limit'] = that.pageInfo.pageSize;
-      params['serprocode'] = "5922218727791888";
+      params["pageNum"] = that.pageInfo.pageIndex;
+      params["limit"] = that.pageInfo.pageSize;
+      params["serprocode"] = that.query.serProCode;
       Server.post(Path.queryUsedRecord, params, res => {
         let { code, data, msg } = res;
         if (code == 200) {
           that.tableData = data;
         }
       });
+    },
+    refreshFun: function() {
+      let that = this;
+      that.pageInfo.pageIndex = 1;
+      that.pageInfo.pageSize = 10;
+      that.query.serProCode = "";
+      that.loadData();
+    },
+    queryFun: function() {
+      let that = this;
+      that.pageInfo.pageIndex = 1;
+      that.pageInfo.pageSize = 10;
+      that.loadData();
     },
     // 分页导航
     handlePageChange(val) {
