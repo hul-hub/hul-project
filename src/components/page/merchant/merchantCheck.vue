@@ -95,23 +95,22 @@
           <template slot-scope="scope">
             <el-button
               type="primary"
-              v-if="scope.row.status != 5"
+              v-if="scope.row.status != 5 && hasPerm('serpro_auditing')"
               size="small"
               @click="handleCheck(scope.$index, scope.row)"
             >审核</el-button>
             <el-button
               type="primary"
               size="small"
-              v-if="scope.row.status != 5"
+              v-if="scope.row.status != 5 && hasPerm('serpro_close')"
               @click="handleStatus(scope.$index, scope.row,5)"
             >关闭</el-button>
             <el-button
               type="primary"
               size="small"
-              v-if="scope.row.status == 5"
+              v-if="scope.row.status == 5 && hasPerm('serpro_close')"
               @click="handleStatus(scope.$index, scope.row,6)"
             >开启</el-button>
-            <!-- <el-button type="primary" size="small" @click="detailFun(scope.$index, scope.row)">通道详情</el-button> -->
           </template>
         </el-table-column>
       </el-table>

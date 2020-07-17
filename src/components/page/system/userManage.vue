@@ -37,6 +37,7 @@
           icon="el-icon-circle-plus-outline"
           class="handle-del mr10"
           @click="editVisible = true"
+          v-if="hasPerm('user_create')"
         >新增</el-button>
       </div>
       <el-table
@@ -69,7 +70,12 @@
         <el-table-column prop="createName" label="创建人" align="center"></el-table-column>
         <el-table-column label="操作" width="180" align="center">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              @click="handleEdit(scope.$index, scope.row)"
+              v-if="hasPerm('user_update')"
+            >编辑</el-button>
             <el-button type="primary" size="small" @click="resetPwd(scope.$index, scope.row)">重置密码</el-button>
           </template>
         </el-table-column>

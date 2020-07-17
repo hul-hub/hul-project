@@ -108,8 +108,14 @@
                   type="primary"
                   size="small"
                   @click="handleAdd(scope.$index, scope.row)"
+                  v-if="hasPerm('route_edit')"
                 >通道配置</el-button>
-                <el-button type="primary" size="small" @click="detailFun(scope.row)">详情</el-button>
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click="detailFun(scope.row)"
+                  v-if="hasPerm('route_info')"
+                >详情</el-button>
               </template>
             </el-table-column>
           </el-table>

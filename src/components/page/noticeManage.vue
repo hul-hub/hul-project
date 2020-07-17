@@ -48,6 +48,7 @@
           size="small"
           icon="el-icon-circle-plus-outline"
           class="handle-del mr10"
+          v-if="hasPerm('notice_add')"
           @click="editVisible = true"
         >新增</el-button>
       </div>
@@ -63,9 +64,9 @@
         <el-table-column prop="noticetitle" label="标题" min-width="120" align="center"></el-table-column>
         <el-table-column label="操作" width="240" align="center">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" @click="handleDetail(scope.$index, scope.row)">详情</el-button>
-            <el-button type="primary" size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button type="primary" size="small" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <el-button type="primary" size="small" v-if="hasPerm('notice_info')" @click="handleDetail(scope.$index, scope.row)">详情</el-button>
+            <el-button type="primary" size="small" v-if="hasPerm('notice_edit')" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button type="primary" size="small" v-if="hasPerm('notice_del')" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

@@ -47,13 +47,14 @@
               type="primary"
               size="small"
               @click="refreshSecretkey(scope.$index, scope.row)"
+              v-if="hasPerm('serpro_resetting')"
             >重置密钥</el-button>
-            <el-button type="primary" size="small" @click="detailFun(scope.$index, scope.row)">详情</el-button>
-            <!-- <el-button
+            <el-button
               type="primary"
               size="small"
-              @click="handleEdit(scope.$index, scope.row)"
-            >子商户配置</el-button>-->
+              @click="detailFun(scope.$index, scope.row)"
+              v-if="hasPerm('key_info')"
+            >详情</el-button>
           </template>
         </el-table-column>
       </el-table>

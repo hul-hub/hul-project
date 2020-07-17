@@ -8,6 +8,7 @@
           icon="el-icon-circle-plus-outline"
           class="handle-del mr10"
           @click="editVisible = true"
+          v-if="hasPerm('role_delete')"
         >新增</el-button>
       </div>
       <el-table
@@ -33,7 +34,12 @@
         <el-table-column prop="createName" label="创建人" align="center"></el-table-column>
         <el-table-column label="操作" width="180" align="center">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              @click="handleEdit(scope.$index, scope.row)"
+              v-if="hasPerm('role_delete')"
+            >编辑</el-button>
             <el-button
               type="primary"
               size="small"
@@ -45,6 +51,45 @@
         </el-table-column>
       </el-table>
     </div>
+
+    <!-- 权限框 -->
+    <div class="blockMask" v-if="permissVisible"></div>
+    <transition>
+      <div class="drawer" v-if="permissVisible">
+        <div class="drawer-dialog">
+          <div class="drawer-content">
+            <div class="drawer-content-content">
+              <div class="drawer-header">
+                <p class="drawer-header-title">编辑权限</p>
+                <span class="close" @click="permissVisible = false">
+                  <i class="el-icon-close"></i>
+                </span>
+              </div>
+              <div class="drawer-body modal-outer">
+                <el-tree
+                  node-key="id"
+                  show-checkbox
+                  :data="treeData"
+                  :props="defaultProps"
+                  :default-checked-keys="checkIds"
+                  :default-expanded-keys="defaultExpendedKeys"
+                  :default-expand-all="false"
+                  :check-strictly="true"
+                  ref="tree"
+                  highlight-current
+                  @check="clickDeal"
+                ></el-tree>
+              </div>
+              <div class="drawer-footer">
+                <el-button type="primary" @click="permissVisible = false">取 消</el-button>
+                <el-button type="primary" @click="savePermiss">确 定</el-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
+
     <!-- 新增编辑 -->
     <Modal
       v-model="editVisible"
@@ -65,25 +110,6 @@
       <div slot="footer">
         <el-button type="primary" @click="cancelEdit">取 消</el-button>
         <el-button type="primary" @click="saveEdit">确 定</el-button>
-      </div>
-    </Modal>
-    <Modal v-model="permissVisible" :closable="false" :mask-closable="false" title="分配权限">
-      <div>
-        <el-tree
-          node-key="id"
-          show-checkbox
-          :data="treeData"
-          :props="defaultProps"
-          :default-checked-keys="checkIds"
-          :default-expanded-keys="defaultExpendedKeys"
-          :check-strictly="true"
-          ref="tree"
-          highlight-current
-        ></el-tree>
-      </div>
-      <div slot="footer">
-        <el-button type="primary" @click="permissVisible = false">取 消</el-button>
-        <el-button type="primary" @click="savePermiss">确 定</el-button>
       </div>
     </Modal>
   </div>
@@ -123,6 +149,43 @@ export default {
     that.loadData();
   },
   methods: {
+    clickDeal(currentObj, treeStatus) {
+      console.log(currentObj);
+      console.log(treeStatus);
+      // 用于：父子节点严格互不关联时，父节点勾选变化时通知子节点同步变化，实现单向关联。
+      let selected = treeStatus.checkedKeys.indexOf(currentObj.id); // -1未选中
+      // 选中
+      if (selected !== -1) {
+        // 子节点只要被选中父节点就被选中
+        this.selectedParent(currentObj);
+        // 统一处理子节点为相同的勾选状态
+        this.uniteChildSame(currentObj, true);
+      } else {
+        // 未选中 处理子节点全部未选中
+        if (currentObj.children != undefined) {
+          if (currentObj.children.length !== 0) {
+            this.uniteChildSame(currentObj, false);
+          }
+        }
+      }
+    },
+    // 统一处理子节点为相同的勾选状态
+    uniteChildSame(treeList, isSelected) {
+      this.$refs.tree.setChecked(treeList.id, isSelected);
+      if (treeList.children != undefined) {
+        for (let i = 0; i < treeList.children.length; i++) {
+          this.uniteChildSame(treeList.children[i], isSelected);
+        }
+      }
+    },
+    // 统一处理父节点为选中
+    selectedParent(currentObj) {
+      let currentNode = this.$refs.tree.getNode(currentObj);
+      if (currentNode.parent.key !== undefined) {
+        this.$refs.tree.setChecked(currentNode.parent, true);
+        this.selectedParent(currentNode.parent);
+      }
+    },
     changeSwitch(status, rolecode) {
       let that = this;
       Server.post(
@@ -197,7 +260,6 @@ export default {
           if (code == 0) {
             var tree = that.toTree(data);
             // console.log(tree);
-            // console.log(JSON.stringify(tree));
             let checkIds = [];
             let defaultExpendedKeys = [];
             // 有时候有返回后台管理系统，有时候没有返回。
@@ -210,14 +272,10 @@ export default {
               that.checkNode(tree, checkIds);
               that.checkDefault(tree, defaultExpendedKeys);
             }
+            // console.log(that.treeData);
             that.checkIds = checkIds;
             // 只展开二级数节点
             that.defaultExpendedKeys = defaultExpendedKeys;
-
-            // checkIds.filter(function(id, index, self) {
-            //   that.$refs.tree.setChecked(id, true, false);
-            // });
-            // console.log(checkIds);
           }
         }
       );
@@ -350,5 +408,88 @@ export default {
   margin: auto;
   width: 40px;
   height: 40px;
+}
+.blockMask {
+  display: block;
+  height: 100%;
+  position: fixed;
+  z-index: 1000;
+  right: 0;
+  top: 0;
+  width: 100%;
+  background: rgba(55, 55, 55, 0.6);
+}
+
+.v-enter {
+  opacity: 0;
+  transform: translateX(100%);
+}
+.v-leave-to {
+  opacity: 0;
+  transform: translateX(100%);
+  /* // 解决页面从上往下位移问题 */
+  position: absolute;
+}
+.v-enter-active,
+.v-leave-active {
+  transition: all 0.5s ease;
+}
+.drawer {
+  display: block;
+  z-index: 1060;
+  opacity: 1;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+  outline: 0;
+}
+.drawer-dialog {
+  width: 380px;
+  position: relative;
+  height: 100%;
+  float: right;
+}
+.drawer-content {
+  height: 100%;
+  position: relative;
+  background-color: #fff;
+  background-clip: padding-box;
+  outline: 0;
+}
+.drawer-content-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.drawer-header {
+  background: 0 0 !important;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 8px 15px;
+}
+.drawer-header-title {
+  float: left;
+  color: #333 !important;
+  font-size: 16px !important;
+}
+.close {
+  float: right;
+  font-size: 16px;
+  cursor: pointer;
+}
+.drawer-body {
+  position: relative;
+  height: 100%;
+  padding: 15px;
+  overflow: auto;
+}
+.drawer-footer {
+  padding: 8px 15px;
+  text-align: right;
+  border-top: 1px solid #e5e5e5;
 }
 </style>

@@ -112,17 +112,22 @@
         </el-table-column>
         <el-table-column label="操作" width="280" align="center">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" @click="handleCheck(scope.$index, scope.row)">审核</el-button>
             <el-button
               type="primary"
-              v-if="scope.row.verifystatus == 2 && scope.row.templatecode != 13"
+              v-if="scope.row.verifystatus == 2 && scope.row.templatecode != 13 && hasPerm('route_push')"
               size="small"
               @click="handleInpart(scope.$index, scope.row)"
             >进件</el-button>
             <el-button
               type="primary"
               size="small"
-              v-if="scope.row.templatecode != 13"
+              @click="handleCheck(scope.$index, scope.row)"
+              v-if="hasPerm('route_auditing')"
+            >审核</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              v-if="scope.row.templatecode != 13 && hasPerm('route_query')"
               @click="handleResultSearch(scope.$index, scope.row)"
             >进件结果查询</el-button>
           </template>

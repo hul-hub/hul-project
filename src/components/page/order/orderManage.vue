@@ -140,11 +140,12 @@
               type="primary"
               size="small"
               @click="queryOrderByCode(scope.$index, scope.row)"
+              v-if="hasPerm('hoopayQueryOrder')"
             >查询</el-button>
             <el-button
               type="primary"
               size="small"
-              v-if=" scope.row.paystatus == 'SUCCESS'"
+              v-if=" scope.row.paystatus == 'SUCCESS' && hasPerm('hoopayRefundOrder')"
               @click="handleRefund(scope.$index, scope.row)"
             >退款</el-button>
           </template>
@@ -291,7 +292,7 @@ export default {
         signature: "" //签名
       };
       Server.postJson(Path.hoopayQueryOrder, JSON.stringify(jsonData), res => {
-        let { respCode,respMsg, payStatus } = res;
+        let { respCode, respMsg, payStatus } = res;
         // console.log(data);s
         if (respCode == "00") {
           switch (payStatus) {

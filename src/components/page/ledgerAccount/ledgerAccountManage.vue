@@ -87,7 +87,7 @@
         </el-table-column>
         <el-table-column label="操作" width="120" align="center" fixed="right">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" @click="handleUser(scope.$index, scope.row)">确认分账</el-button>
+            <el-button type="primary" size="small" @click="handleUser(scope.$index, scope.row)" v-if="hasPerm('affirmaccount')">确认分账</el-button>
           </template>
         </el-table-column>
       </el-table>

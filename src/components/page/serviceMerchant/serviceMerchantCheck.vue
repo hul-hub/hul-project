@@ -95,21 +95,26 @@
           <template slot-scope="scope">
             <el-button
               type="primary"
-              v-if="scope.row.status != 5"
+              v-if="scope.row.status != 5 && hasPerm('service_audit')"
               size="small"
               @click="handleCheck(scope.$index, scope.row)"
             >审核</el-button>
-            <el-button type="primary" size="small" @click="detailFun(scope.$index, scope.row)">详情</el-button>
             <el-button
               type="primary"
               size="small"
-              v-if="scope.row.status != 5"
+              @click="detailFun(scope.$index, scope.row)"
+              v-if="hasPerm('service_audit_info')"
+            >详情</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              v-if="scope.row.status != 5 && hasPerm('service_status_edit')"
               @click="handleStatus(scope.$index, scope.row,5)"
             >关闭</el-button>
             <el-button
               type="primary"
               size="small"
-              v-if="scope.row.status == 5"
+              v-if="scope.row.status == 5 && hasPerm('service_status_edit')"
               @click="handleStatus(scope.$index, scope.row,6)"
             >开启</el-button>
           </template>
@@ -179,16 +184,16 @@ export default {
       let that = this;
       switch (type) {
         case 5:
-          that.okHandleStatus(index,row, 5);
+          that.okHandleStatus(index, row, 5);
           break;
         case 6:
-          that.okHandleStatus(index,row, 6);
+          that.okHandleStatus(index, row, 6);
           break;
         default:
           break;
       }
     },
-    okHandleStatus(index,row, status) {
+    okHandleStatus(index, row, status) {
       let that = this;
       let content = "";
       let title = "";

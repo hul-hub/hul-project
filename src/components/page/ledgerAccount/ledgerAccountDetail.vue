@@ -87,12 +87,13 @@
                 <el-button
                   type="primary"
                   size="small"
-                  v-if="scope.row.type == 'MERCHANT_ID' && scope.row.status == 'SUCCESS'"
+                  v-if="scope.row.type == 'MERCHANT_ID' && scope.row.status == 'SUCCESS' && hasPerm('spoNsorOrderFzRefund')"
                   @click="handleRefund(scope.$index, scope.row)"
                 >回退</el-button>
                 <el-button
                   type="primary"
                   size="small"
+                  v-if="hasPerm('profitReturnSubOrderQuery')"
                   @click="handleRefundQuery(scope.$index, scope.row)"
                 >查询回退</el-button>
               </template>

@@ -74,6 +74,7 @@
               type="primary"
               size="small"
               @click="exportQrcode(scope.$index, scope.row)"
+              v-if="hasPerm('Export_QRcode')"
             >导出二维码</el-button>
           </template>
         </el-table-column>

@@ -44,6 +44,7 @@
           icon="el-icon-circle-plus-outline"
           class="handle-del mr10"
           @click="editVisible = true"
+          v-if="hasPerm('sub_add')"
         >新增</el-button>
       </div>
       <el-table

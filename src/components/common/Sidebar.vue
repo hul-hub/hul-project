@@ -10,8 +10,8 @@
       unique-opened
       router
     >
-      <!-- <template v-for="item in newMenu"> -->
-      <template v-for="item in items">
+      <template v-for="item in newMenu">
+        <!-- <template v-for="item in items"> -->
         <template v-if="item.subs &&  item.subs.length > 0">
           <el-submenu :index="item.index" :key="item.index">
             <template slot="title">
@@ -74,12 +74,12 @@ export default {
             {
               id: "08",
               index: "serviceMerchantManage",
-              title: "服务商新增"
+              title: "服务商信息管理"
             },
             {
               id: "23",
               index: "serviceMerchantCheck",
-              title: "服务商管理"
+              title: "服务商信息审核"
             }
           ]
         },
@@ -93,12 +93,12 @@ export default {
             {
               id: "19",
               index: "merchantNetwork",
-              title: "商户新增"
+              title: "商户入网"
             },
             {
               id: "20",
               index: "merchantCheck",
-              title: "商户管理"
+              title: "商户审核"
             },
             {
               id: "34",
@@ -172,39 +172,39 @@ export default {
         },
 
         {
-          id: "",
+          id: "46",
           icon: "el-icon-s-finance",
           index: "8",
           title: "分账管理",
           sort: 8,
           subs: [
             {
-              id: "",
+              id: "47",
               index: "ledgerAccountSetting",
               title: "接收方配置"
             },
             {
-              id: "",
+              id: "48",
               index: "ledgerAccountManage",
               title: "分账"
             },
 
             {
-              id: "",
+              id: "49",
               index: "ledgerAccountList",
               title: "分账查询"
             }
           ]
         },
         {
-          id: "27",
+          id: "50",
           icon: "el-icon-money",
           index: "9",
           sort: 9,
           title: "红包",
           subs: [
-            { id: "30", index: "redPackageGrant", title: "红包发放" },
-            { id: "30", index: "redPackageQuery", title: "红包查询" }
+            { id: "51", index: "redPackageGrant", title: "红包发放" },
+            { id: "52", index: "redPackageQuery", title: "红包查询" }
           ]
         },
         {
@@ -260,7 +260,6 @@ export default {
               index: "roleManage",
               title: "角色管理"
             },
-
             {
               id: "33",
               index: "dataSetting",
@@ -300,6 +299,22 @@ export default {
     });
   },
   methods: {
+    // 递归给获取所有按钮的权限
+    znode(menuData, btnPermissList) {
+      let me = this;
+      for (let menu of menuData) {
+        if (menu.buttonVoList.length != 0) {
+          for (let btn of menu.buttonVoList) {
+            btnPermissList.push(btn.percode);
+          }
+        }
+        if (menu.children != undefined) {
+          if (menu.children.length != 0) {
+            me.znode(menu.children, btnPermissList);
+          }
+        }
+      }
+    },
     initMenuData() {
       let that = this;
       let newMenuData = [];
@@ -312,6 +327,12 @@ export default {
       };
       newMenuData.push(homeItem);
       let menuData = JSON.parse(window.localStorage.getItem("menuData"));
+      // 按钮权限
+      let btnPermissList = [];
+      that.znode(menuData, btnPermissList);
+      let { commit } = that.$store.store;
+      commit("setPermissList", btnPermissList.join(","));
+      // console.log(btnPermissList);
       for (let menuItem of menuData) {
         let newRoute = {
           id: "",

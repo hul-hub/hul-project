@@ -124,8 +124,8 @@
         </el-table-column>
         <el-table-column label="操作" width="180" align="center" fixed="right">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" @click="handleQuery(scope.$index, scope.row)">查询</el-button>
-            <el-button type="primary" size="small" @click="handleDetail(scope.$index, scope.row)">详情</el-button>
+            <el-button type="primary" size="small" @click="handleQuery(scope.$index, scope.row)" v-if="hasPerm('querySubOrder')">查询</el-button>
+            <el-button type="primary" size="small" @click="handleDetail(scope.$index, scope.row)" v-if="hasPerm('getSubAccountOrderDetails')">详情</el-button>
           </template>
         </el-table-column>
       </el-table>

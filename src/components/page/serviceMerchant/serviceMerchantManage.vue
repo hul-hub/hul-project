@@ -68,6 +68,7 @@
           icon="el-icon-circle-plus-outline"
           class="handle-del mr10"
           @click="addFun"
+          v-if="hasPerm('service_add')"
         >新增</el-button>
       </div>
       <el-table
@@ -102,7 +103,7 @@
         </el-table-column>
         <el-table-column label="操作" width="100" align="center">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button type="primary" size="small"  v-if="hasPerm('service_edit')" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>

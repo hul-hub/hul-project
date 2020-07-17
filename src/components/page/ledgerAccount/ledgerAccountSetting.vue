@@ -37,6 +37,7 @@
           icon="el-icon-circle-plus-outline"
           class="handle-del mr10"
           @click="editVisible = true"
+          v-if="hasPerm('accountadd')"
         >新增</el-button>
       </div>
       <el-table
@@ -68,7 +69,7 @@
         <el-table-column label="自定义的分账关系" width="100" prop="customRelation" align="center"></el-table-column>
         <el-table-column label="操作" width="100" align="center">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <el-button type="primary" size="small" @click="handleDelete(scope.$index, scope.row)" v-if="hasPerm('remove')">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
