@@ -43,7 +43,7 @@ export default new Router({
                 {
                     path: '/serviceMerchantManage',
                     component: () => import(/* webpackChunkName: "dataSetting" */ '../components/page/serviceMerchant/serviceMerchantManage.vue'),
-                    meta: { title: '服务商新增' }
+                    meta: { title: '服务商信息管理' }
                 },
                 {
                     path: '/serviceMerchantAdd',
@@ -53,7 +53,7 @@ export default new Router({
                 {
                     path: '/serviceMerchantCheckVerify',
                     component: () => import(/* webpackChunkName: "dataSetting" */ '../components/page/serviceMerchant/serviceMerchantCheckVerify.vue'),
-                    meta: { title: '审核服务商' }
+                    meta: { title: '服务商信息审核' }
                 },
                 {
                     path: '/serviceMerchantCheckDetail',
@@ -68,7 +68,7 @@ export default new Router({
                 {
                     path: '/merchantNetwork',
                     component: () => import(/* webpackChunkName: "dataSetting" */ '../components/page/merchant/merchantNetwork.vue'),
-                    meta: { title: '商户新增' }
+                    meta: { title: '商户入网' }
                 },
                 {
                     path: '/merchantAdd',
@@ -78,12 +78,12 @@ export default new Router({
                 {
                     path: '/merchantCheck',
                     component: () => import(/* webpackChunkName: "dataSetting" */ '../components/page/merchant/merchantCheck.vue'),
-                    meta: { title: '商户管理' }
+                    meta: { title: '商户审核' }
                 },
                 {
                     path: '/merchantCode',
                     component: () => import(/* webpackChunkName: "dataSetting" */ '../components/page/merchant/merchantCode.vue'),
-                    meta: { title: '商户配置' }
+                    meta: { title: '商户信息配置' }
                 },
                 {
                     path: '/merchantCodeDetail',

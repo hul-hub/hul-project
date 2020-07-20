@@ -27,6 +27,7 @@
               v-model="scope.row.status"
               active-value="1"
               inactive-value="0"
+              :disabled="!hasPerm('role_close')"
               @change="changeSwitch(scope.row.status,scope.row.rolecode)"
             ></el-switch>
           </template>
@@ -44,6 +45,7 @@
               type="primary"
               size="small"
               @click="handlePermiss(scope.$index, scope.row)"
+              v-if="hasPerm('assign_permissions')"
             >分配权限</el-button>
             <!-- 删除为更新角色状态，所以没有放出来。 -->
             <!-- <el-button type="primary" size="small" @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->

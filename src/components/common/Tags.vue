@@ -188,7 +188,7 @@ export default {
 
 .tags-li-title {
   float: left;
-  max-width: 90px;
+  max-width: 100px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

@@ -103,7 +103,7 @@ export default {
             {
               id: "34",
               index: "merchantCode",
-              title: "商户配置"
+              title: "商户信息配置"
             },
             {
               id: "40",
