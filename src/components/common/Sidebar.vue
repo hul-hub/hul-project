@@ -10,8 +10,8 @@
       unique-opened
       router
     >
-      <template v-for="item in newMenu">
-        <!-- <template v-for="item in items"> -->
+      <!-- <template v-for="item in newMenu"> -->
+      <template v-for="item in items">
         <template v-if="item.subs &&  item.subs.length > 0">
           <el-submenu :index="item.index" :key="item.index">
             <template slot="title">
@@ -201,7 +201,7 @@ export default {
           icon: "el-icon-money",
           index: "9",
           sort: 9,
-          title: "红包",
+          title: "微信红包",
           subs: [
             { id: "51", index: "redPackageGrant", title: "红包发放" },
             { id: "52", index: "redPackageQuery", title: "红包查询" }

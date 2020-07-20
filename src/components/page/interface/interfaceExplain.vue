@@ -41,7 +41,6 @@
           </div>
         </div>
       </div>
-      <!-- <el-tabs v-model="activeTab" @tab-click="tabFun"> -->
       <el-tabs v-model="activeTab">
         <el-tab-pane label="接口文档" name="first-one">
           <div class="have-margin">
@@ -65,7 +64,7 @@
                   <h3>接口地址:</h3>
                   <div>
                     &nbsp;&nbsp;&nbsp;
-                    https://route.showapi.com/1072-1 （注意：接口也支持http协议，请根据自己的情况进行选择。）
+                    http://api.hooskp.com/api/showapi/bankAuthentication （注意：接口也支持http协议，请根据自己的情况进行选择。）
                   </div>
                 </div>
               </div>
@@ -221,7 +220,7 @@
               </div>
             </div>
           </div>
-          <div>
+          <!-- <div>
             <h2 class="have-margin">四、请求示例/ Request example</h2>
             <div
               class="json-par have-margin"
@@ -233,9 +232,9 @@
                 </el-tab-pane>
               </el-tabs>
             </div>
-          </div>
+          </div>-->
           <div>
-            <h2 class="have-margin">五、返回示例/ Return example</h2>
+            <h2 class="have-margin">四、返回示例/ Return example</h2>
             <div class="have-margin">
               <json-viewer class="json-par" :value="resDataParam" :expand-depth="5" copyable sort></json-viewer>
             </div>
@@ -463,11 +462,11 @@ export default {
       ],
       sysTable: [
         {
-          name: "showapi_appid",
+          name: "serProCode",
           type: "String",
-          defaultValue: "100",
+          defaultValue: "5922118050086655",
           must: "是",
-          description: "易源应用id"
+          description: "取信宝商户号"
         },
         {
           name: "......",
@@ -479,16 +478,34 @@ export default {
       ],
       applyTable: [
         {
-          name: "idcard",
+          name: "cert_id",
           type: "String",
           must: "是",
           description: "身份证号，测试时注意不要填错，填错一样扣减使用次数"
         },
         {
-          name: "name",
+          name: "acct_name",
           type: "String",
           must: "是",
           description: "姓名，测试时注意不要填错，填错一样扣减使用次数"
+        },
+        {
+          name: "acct_pan",
+          type: "String",
+          must: "是",
+          description: "银行卡账号，测试时注意不要填错，填错一样扣减使用次数"
+        },
+        {
+          name: "phone_num",
+          type: "String",
+          must: "是",
+          description: " 绑定手机号，测试时注意不要填错，填错一样扣减使用次数"
+        },
+        {
+          name: "cert_type",
+          type: "String",
+          must: "是",
+          description: "开卡使用的证件类型；01:身份证，目前只支持身份证"
         }
       ]
     };
@@ -506,7 +523,7 @@ export default {
         that.checkTimeFun();
       } else {
         // console.log(22222);
-        that.formItem.timeType ="一年";
+        that.formItem.timeType = "一年";
         that.activeIndex = index - 1;
         that.checkTimeFun();
       }
@@ -705,45 +722,36 @@ export default {
       if (!that.isSystem) {
         that.sysTable = [
           {
-            name: "showapi_appid",
+            name: "serProCode",
             type: "String",
-            defaultValue: "100",
+            defaultValue: "5922118050086655",
             must: "是",
-            description: "易源应用id"
+            description: "取信宝商户号"
           },
           {
-            name: "showapi_sign",
+            name: "key",
             type: "String",
             defaultValue: "698d51a19d8a121ce581499d7b701668",
             must: "是",
-            description:
-              "为了验证用户身份，以及确保参数不被中间人篡改，需要传递调用者的数字签名。 可选【简单密钥方式】,在url后带上showapi_appid和showapi_sign即可"
+            description: "取信宝密钥"
           },
           {
-            name: "showapi_timestamp",
+            name: "signature",
             type: "String",
             defaultValue: "20141114142239",
             must: "是",
             description:
-              "客户端时间。格式yyyyMMddHHmmss,如20141114142239为了在一定程度上防止“重放攻击”，平台只接受在10分钟之内的请求。如果不传或传空串，则系统不再做此字段的检测。"
-          },
-          {
-            name: "showapi_res_gzip",
-            type: "String",
-            defaultValue: "1或0",
-            must: "是",
-            description:
-              "返回值是否用gzip方式压缩。此值为1时将压缩，其他值不压缩。"
+              "签名，所有参数按照字段名的ascii码从小到大排序后使用QueryString的格式（即key1=value1&key2=value2…）拼接而成"
           }
         ];
       } else {
         that.sysTable = [
           {
-            name: "showapi_appid",
+            name: "serProCode",
             type: "String",
-            defaultValue: "100",
+            defaultValue: "5922118050086655",
             must: "是",
-            description: "易源应用id"
+            description: "取信宝商户号"
           },
           {
             name: "......",
