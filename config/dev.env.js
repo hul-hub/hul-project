@@ -10,8 +10,8 @@ module.exports = merge(prodEnv, {
   // BASE_API: '"http://47.114.32.158:80/"', // 本地服务器s
   // BASE_API: '"https://47.111.161.50:9000/"', // 测试服务器
   // BASE_API: '"http://api-test.hooskp.com/"', // 测试服务器http
-  // BASE_API: '"https://api-test.hooskp.com:9100/"', // 测试服务器https
-  BASE_API: '"https://api.hooskp.com/"', // 正式服务器
+  BASE_API: '"https://api-test.hooskp.com:9100/"', // 测试服务器https
+  // BASE_API: '"https://api.hooskp.com/"', // 正式服务器
 
 
   // 二维码招生推广
