@@ -91,7 +91,7 @@
             <span>{{ scope.row.status | filterStatus}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="240" align="center">
+        <el-table-column label="操作" width="260" align="center">
           <template slot-scope="scope">
             <el-button
               type="primary"
@@ -104,7 +104,7 @@
               size="small"
               @click="detailFun(scope.$index, scope.row)"
               v-if="hasPerm('service_audit_info')"
-            >详情</el-button>
+            >通道详情</el-button>
             <el-button
               type="primary"
               size="small"
