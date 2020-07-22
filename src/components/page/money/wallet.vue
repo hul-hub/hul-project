@@ -6,7 +6,14 @@
           <el-row :gutter="36" type="flex">
             <el-col :span="6" style="margin: auto;">
               <el-form-item label="商户编码:" class="query-form-item">
-                <el-input v-model="query.serProCode"></el-input>
+                <el-select v-model="query.serProCode" placeholder="请选择" style="width:100%">
+                  <el-option
+                    v-for="(item,index) in toSerproList"
+                    :key="index"
+                    :label="item.serproname"
+                    :value="item.serprocode"
+                  ></el-option>
+                </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="18">
@@ -31,6 +38,7 @@
           size="small"
           icon="el-icon-s-finance"
           class="handle-del mr10"
+          v-if="hasPerm('packet_top_uo')"
           @click="moneyModal = true"
         >充值</el-button>
         <p class="balance">
@@ -133,6 +141,7 @@ export default {
     return {
       tableData: [],
       payTypeList: [],
+      toSerproList: [],
       balance: 0.0,
       qrcodeUrl: "",
       moneyModal: false,
@@ -164,8 +173,21 @@ export default {
   created() {
     let that = this;
     that.queryBasePayType();
+    that.querySerProListByCode();
   },
   methods: {
+    querySerProListByCode() {
+      let that = this;
+      let params = {};
+      params["token"] = localStorage.getItem("tokenData");
+      params["serviceType"] = 2;
+      Server.post(Path.querySerProListByCode, params, res => {
+        let { code, data, msg, count } = res;
+        if (code == 200) {
+          that.toSerproList = data;
+        }
+      });
+    },
     okFun() {
       let that = this;
       that.$refs.serItem.validate(valid => {
@@ -268,6 +290,7 @@ export default {
       that.pageInfo.pageIndex = 1;
       that.pageInfo.pageSize = 10;
       that.query.serProCode = "";
+      that.balance = 0;
       that.loadData();
     },
     queryFun: function() {

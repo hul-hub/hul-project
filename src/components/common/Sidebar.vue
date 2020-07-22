@@ -10,8 +10,8 @@
       unique-opened
       router
     >
-      <!-- <template v-for="item in newMenu"> -->
-      <template v-for="item in items">
+      <template v-for="item in newMenu">
+      <!-- <template v-for="item in items"> -->
         <template v-if="item.subs &&  item.subs.length > 0">
           <el-submenu :index="item.index" :key="item.index">
             <template slot="title">
@@ -219,7 +219,7 @@ export default {
           ]
         },
         {
-          id: "47",
+          id: "1231",
           icon: "el-icon-suitcase",
           index: "wallet",
           sort: 11,
@@ -227,19 +227,19 @@ export default {
           subs: []
         },
         {
-          id: "45",
+          id: "1241",
           icon: "el-icon-connection",
           index: "12",
           title: "接口服务",
           sort: 12,
           subs: [
             {
-              id: "49",
+              id: "12411",
               index: "realNameAuth",
               title: "实名认证"
             },
-            { id: "452", index: "interfaceRecord", title: "接口调用记录" },
-            { id: "451", index: "interfaceExplain", title: "接口说明" }
+            { id: "1261", index: "interfaceRecord", title: "接口调用记录" },
+            { id: "1251", index: "interfaceExplain", title: "接口说明" }
           ]
         },
         {

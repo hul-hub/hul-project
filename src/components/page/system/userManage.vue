@@ -122,6 +122,16 @@
               ></el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="所属商户：" prop="serprocode">
+            <el-select v-model="userItem.serprocode" placeholder="请选择" style="width:100%">
+              <el-option
+                v-for="(item,index) in toSerproList"
+                :key="index"
+                :label="item.serproname"
+                :value="item.serprocode"
+              ></el-option>
+            </el-select>
+          </el-form-item>
         </el-form>
         <div slot="footer">
           <el-button type="primary" @click="cancelEdit">取 消</el-button>
@@ -133,13 +143,13 @@
 </template>
 
 <script>
-import { fetchData } from "@/api/index";
 import Server from "@/service/request";
 import Path from "@/service/Path";
 export default {
   name: "userManage",
   data() {
     return {
+      toSerproList: [],
       query: {
         username: "", // 账号名称
         loginname: "" //用户名称
@@ -155,7 +165,8 @@ export default {
         username: "",
         loginname: "",
         pwd: "",
-        rid: ""
+        rid: "",
+        serprocode: ""
       },
       roleList: [],
       rules: {
@@ -166,7 +177,10 @@ export default {
           { required: true, message: "请输入用户名称", trigger: "blur" }
         ],
         pwd: [{ required: true, message: "请输入用户密码", trigger: "blur" }],
-        rid: [{ required: true, message: "请选择用户角色", trigger: "change" }]
+        rid: [{ required: true, message: "请选择用户角色", trigger: "change" }],
+        serprocode: [
+          { required: true, message: "请选择所属商户", trigger: "change" }
+        ]
       },
       multipleSelection: [],
       delList: [],
@@ -181,8 +195,21 @@ export default {
     let that = this;
     that.loadData();
     that.loadRoleList();
+    that.querySerProListByCode();
   },
   methods: {
+    querySerProListByCode() {
+      let that = this;
+      let params = {};
+      params["token"] = localStorage.getItem("tokenData");
+      params["serviceType"] = 2;
+      Server.post(Path.querySerProListByCode, params, res => {
+        let { code, data, msg, count } = res;
+        if (code == 200) {
+          that.toSerproList = data;
+        }
+      });
+    },
     resetUserItem() {
       let that = this;
       that.userItem = {
@@ -190,7 +217,8 @@ export default {
         username: "",
         loginname: "",
         pwd: "",
-        rid: ""
+        rid: "",
+        serprocode: ""
       };
     },
     cancelEdit() {
@@ -216,6 +244,7 @@ export default {
           params["loginname"] = that.userItem.loginname;
           params["pwd"] = that.userItem.pwd;
           params["rid"] = that.userItem.rid;
+          params["serprocode"] = that.userItem.serprocode;
           Server.post(url, params, res => {
             let { code, data, msg } = res;
             if (code == 200) {
@@ -327,6 +356,7 @@ export default {
       that.userItem.loginname = row.loginname;
       that.userItem.pwd = row.pwd;
       that.userItem.rid = row.roleVo.rolecode;
+      that.userItem.serprocode = row.roleVo.serprocode;
       that.editVisible = true;
       console.log(that.userItem);
     },
