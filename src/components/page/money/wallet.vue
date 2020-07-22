@@ -47,15 +47,14 @@
         header-cell-class-name="table-header"
       >
         <el-table-column type="index" width="70" label="序号" align="center"></el-table-column>
-        <el-table-column prop="serProName" label="商户名称" align="center"></el-table-column>
+        <el-table-column prop="serproName" label="商户名称" align="center"></el-table-column>
         <el-table-column prop="orderid" label="订单号" align="center"></el-table-column>
         <el-table-column label="充值金额" align="center">
           <template slot-scope="scope">{{scope.row.amount/100}}</template>
         </el-table-column>
         <el-table-column label="充值方式" align="center">
           <template slot-scope="scope">
-            <span>{{scope.row.paytypecode | filterPaytype}}</span>
-            <span>{{scope.row.paywaycode | filterGetPayWay}}</span>
+            <span>{{scope.row.payTypeCode | filterPaytype}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="finishtime" label="充值时间" align="center"></el-table-column>
@@ -283,43 +282,11 @@ export default {
     filterPaytype(paytypecode) {
       switch (paytypecode) {
         case "01":
-          return "微信-";
+          return "微信";
         case "02":
-          return "支付宝-";
-        case "03":
-          return "银联-";
-        case "04":
-          return "百度-";
-        case "05":
-          return "京东-";
-        case "06":
-          return "QQ钱包-";
+          return "支付宝";
         default:
-          return "暂无-";
-      }
-    },
-    filterGetPayWay(payWayCode) {
-      switch (payWayCode) {
-        case "AP":
-          return "APP支付";
-        case "DF":
-          return "代付";
-        case "FK":
-          return "付款码支付";
-        case "FW":
-          return "服务窗支付";
-        case "GZ":
-          return "公众号支付";
-        case "H5":
-          return "H5支付";
-        case "KJ":
-          return "快捷支付";
-        case "SM":
-          return "扫码支付";
-        case "WG":
-          return "网关支付";
-        default:
-          return "支付方式未知";
+          return "其他";
       }
     },
     filterOrderStatus(val) {

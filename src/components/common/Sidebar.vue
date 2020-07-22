@@ -170,7 +170,6 @@ export default {
             }
           ]
         },
-
         {
           id: "46",
           icon: "el-icon-s-finance",
@@ -239,8 +238,8 @@ export default {
               index: "realNameAuth",
               title: "实名认证"
             },
-            { id: "451", index: "interfaceExplain", title: "接口说明" },
-            { id: "452", index: "interfaceRecord", title: "接口调用记录" }
+            { id: "452", index: "interfaceRecord", title: "接口调用记录" },
+            { id: "451", index: "interfaceExplain", title: "接口说明" }
           ]
         },
         {

@@ -13,7 +13,7 @@
             <el-col :span="6">
               <el-form-item label="认证类型:" class="query-form-item">
                 <el-select
-                  v-model="authItem.settingWay"
+                  v-model="authItem.authType"
                   @change="changeAuthType"
                   placeholder="请选择"
                   style="width:100%"
@@ -130,15 +130,12 @@ export default {
   components: {},
   data() {
     return {
-      authTypeList: [
-        { label: "身份证", value: "1" },
-        { label: "银行卡", value: "2" }
-      ],
+      authTypeList: [{ label: "银行卡", value: "2" }],
       authItem: {
-        authType: ""
+        authType: "2"
       },
       isIdent: false,
-      isBank: false,
+      isBank: true,
       identItem: {
         flag: "1", // 判断是否为内部调用，随便填 ,
         idcard: "", //身份证号码 ,
@@ -256,7 +253,7 @@ export default {
           params["acct_pan"] = that.bankItem.acct_pan;
           params["cert_id"] = that.bankItem.cert_id;
           params["cert_type"] = that.bankItem.cert_type;
-          params["phone_num "] = that.bankItem.phone_num;
+          params["phone_num"] = that.bankItem.phone_num;
           Server.postJson(Path.bankAuthentication, params, res => {
             let { showapi_res_code, showapi_res_error } = res;
             if (showapi_res_code == 0) {
