@@ -5,8 +5,16 @@
         <el-form :model="query" label-width="80px" label-position="left" size="small">
           <el-row :gutter="36" type="flex">
             <el-col :span="6" style="margin: auto;">
-              <el-form-item label="商户编码:" class="query-form-item">
-                <el-input v-model="query.serProCode"></el-input>
+              <el-form-item label="所属商户:" class="query-form-item">
+                <!-- <el-input v-model="query.serProCode"></el-input> -->
+                <el-select v-model="query.serProCode" placeholder="请选择" style="width:100%">
+                  <el-option
+                    v-for="(item,index) in toSerproList"
+                    :key="index"
+                    :label="item.serproname"
+                    :value="item.serprocode"
+                  ></el-option>
+                </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="18">
@@ -65,6 +73,7 @@ export default {
   data() {
     return {
       tableData: [],
+      toSerproList: [],
       query: {
         serProCode: ""
       },
@@ -78,8 +87,21 @@ export default {
   created() {
     let that = this;
     that.loadData();
+    that.querySerProListByCode();
   },
   methods: {
+    querySerProListByCode() {
+      let that = this;
+      let params = {};
+      params["token"] = localStorage.getItem("tokenData");
+      params["serviceType"] = 2;
+      Server.post(Path.querySerProListByCode, params, res => {
+        let { code, data, msg, count } = res;
+        if (code == 200) {
+          that.toSerproList = data;
+        }
+      });
+    },
     loadData() {
       let that = this;
       let params = {};

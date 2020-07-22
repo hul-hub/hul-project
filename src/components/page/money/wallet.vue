@@ -5,7 +5,7 @@
         <el-form :model="query" label-width="80px" label-position="left" size="small">
           <el-row :gutter="36" type="flex">
             <el-col :span="6" style="margin: auto;">
-              <el-form-item label="商户编码:" class="query-form-item">
+              <el-form-item label="所属商户:" class="query-form-item">
                 <el-select v-model="query.serProCode" placeholder="请选择" style="width:100%">
                   <el-option
                     v-for="(item,index) in toSerproList"
@@ -42,7 +42,7 @@
           @click="moneyModal = true"
         >充值</el-button>
         <p class="balance">
-          可用余额:
+          所属商户可用余额:
           <span>{{balance}}</span>
           元
         </p>
@@ -174,6 +174,7 @@ export default {
     let that = this;
     that.queryBasePayType();
     that.querySerProListByCode();
+    that.loadData();
   },
   methods: {
     querySerProListByCode() {
