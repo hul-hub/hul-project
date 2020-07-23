@@ -42,6 +42,7 @@
         ref="multipleTable"
         header-cell-class-name="table-header"
       >
+        <!-- 今天7.24号，工资还没有发下来。 -->
         <el-table-column type="index" width="70" label="序号" align="center"></el-table-column>
         <el-table-column prop="usercode" label="用户账号" min-width="120" align="center"></el-table-column>
         <el-table-column prop="username" label="用户名称" min-width="100" align="center"></el-table-column>
@@ -70,7 +71,12 @@
               @click="handleEdit(scope.$index, scope.row)"
               v-if="hasPerm('user_update')"
             >编辑</el-button>
-            <el-button type="primary" size="small" @click="resetPwd(scope.$index, scope.row)">重置密码</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              v-if="hasPerm('reset_password')"
+              @click="resetPwd(scope.$index, scope.row)"
+            >重置密码</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -162,7 +168,14 @@ export default {
         username: [
           { required: true, message: "请输入用户名称", trigger: "blur" },
         ],
-        pwd: [{ required: true, message: "请输入用户密码", trigger: "blur" }],
+        pwd: [
+          { required: true, message: "请输入用户密码", trigger: "blur" },
+          {
+            min: 6,
+            message: "请输入不小于6位的用户密码",
+            trigger: "blur",
+          },
+        ],
         rid: [{ required: true, message: "请选择用户角色", trigger: "change" }],
       },
       multipleSelection: [],
@@ -237,6 +250,8 @@ export default {
               that.editVisible = false;
               that.loadData();
               that.$message.success("操作成功!");
+            } else {
+              that.$message.error(msg);
             }
           });
         }

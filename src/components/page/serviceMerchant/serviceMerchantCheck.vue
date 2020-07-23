@@ -68,6 +68,7 @@
         ref="multipleTable"
         header-cell-class-name="table-header"
       >
+        <!-- 坑啊，今天已经23号了，工资还没有任何动静，也不说不发的原因。 -->
         <el-table-column type="index" width="70" label="序号" align="center"></el-table-column>
         <el-table-column prop="serprocode" label="服务商编码" min-width="150" align="center"></el-table-column>
         <el-table-column prop="serproname" label="服务商名称" min-width="180" align="center"></el-table-column>
@@ -150,12 +151,12 @@ export default {
         serProName: "",
         contactsname: "",
         mobile: "",
-        status: ""
+        status: "",
       },
       pageInfo: {
         pageIndex: 1,
         pageSize: 10,
-        total: 0
+        total: 0,
       },
       tableData: [],
       toSerproList: [],
@@ -165,8 +166,8 @@ export default {
         { label: "待审核", value: "4" },
         { label: "已关闭", value: "5" },
         { label: "已变更", value: "6" },
-        { label: "新增", value: "9" }
-      ]
+        { label: "新增", value: "9" },
+      ],
     };
   },
   activated() {
@@ -206,13 +207,13 @@ export default {
       }
       that
         .$confirm(content, title, {
-          type: "warning"
+          type: "warning",
         })
         .then(() => {
           Server.post(
             Path.updStatusByCode,
             { serProCode: row.serprocode + "", status: status },
-            res => {
+            (res) => {
               let { code, data, msg } = res;
               if (code == 200) {
                 that.loadData();
@@ -223,13 +224,13 @@ export default {
         })
         .catch(() => {});
     },
-    queryFun: function() {
+    queryFun: function () {
       let that = this;
       that.pageInfo.pageIndex = 1;
       that.pageInfo.pageSize = 10;
       that.loadData();
     },
-    refreshFun: function() {
+    refreshFun: function () {
       let that = this;
       that.query = {
         serviceType: 1,
@@ -237,7 +238,7 @@ export default {
         serProName: "",
         contactsname: "",
         mobile: "",
-        status: ""
+        status: "",
       };
       that.pageInfo.pageIndex = 1;
       that.pageInfo.pageSize = 10;
@@ -254,7 +255,7 @@ export default {
       params["contactsname"] = that.query.contactsname;
       params["mobile"] = that.query.mobile;
       params["status"] = that.query.status;
-      Server.post(Path.querySerProList, params, res => {
+      Server.post(Path.querySerProList, params, (res) => {
         let { code, data, msg, count } = res;
         if (code == 200) {
           that.tableData = data;
@@ -267,7 +268,7 @@ export default {
       let params = {};
       params["token"] = localStorage.getItem("tokenData");
       params["serviceType"] = 1;
-      Server.post(Path.querySerProListByCode, params, res => {
+      Server.post(Path.querySerProListByCode, params, (res) => {
         let { code, data, msg, count } = res;
         if (code == 200) {
           that.toSerproList = data;
@@ -280,8 +281,8 @@ export default {
       that.$router.push({
         path: "/serviceMerchantCheckDetail?from=serviceMerchantCheck",
         query: {
-          id: row.serprocode
-        }
+          id: row.serprocode,
+        },
       });
     },
     // 编辑操作
@@ -291,8 +292,8 @@ export default {
       that.$router.push({
         path: "/serviceMerchantCheckVerify?from=serviceMerchantCheck",
         query: {
-          id: row.serprocode
-        }
+          id: row.serprocode,
+        },
       });
     },
     // 分页导航
@@ -309,7 +310,7 @@ export default {
       that.pageInfo.pageIndex = 1;
       that.pageInfo.pageSize = val;
       that.loadData();
-    }
+    },
   },
   filters: {
     //scope.row.status==1?"已通过":(scope.row.status==2?"已拒绝"
@@ -339,8 +340,8 @@ export default {
           break;
       }
       return status;
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -11,7 +11,7 @@
       router
     >
       <template v-for="item in newMenu">
-      <!-- <template v-for="item in items"> -->
+        <!-- <template v-for="item in items"> -->
         <template v-if="item.subs &&  item.subs.length > 0">
           <el-submenu :index="item.index" :key="item.index">
             <template slot="title">
@@ -54,14 +54,14 @@ export default {
           icon: "el-icon-s-home",
           index: "dashboard",
           title: "系统首页",
-          sort: 1
+          sort: 1,
         },
         {
           id: "02",
           icon: "el-icon-s-comment",
           index: "noticeManage",
           title: "公告管理",
-          sort: 2
+          sort: 2,
         },
 
         {
@@ -74,14 +74,14 @@ export default {
             {
               id: "08",
               index: "serviceMerchantManage",
-              title: "服务商信息管理"
+              title: "服务商信息管理",
             },
             {
               id: "23",
               index: "serviceMerchantCheck",
-              title: "服务商信息审核"
-            }
-          ]
+              title: "服务商信息审核",
+            },
+          ],
         },
         {
           id: "05",
@@ -93,29 +93,29 @@ export default {
             {
               id: "19",
               index: "merchantNetwork",
-              title: "商户入网"
+              title: "商户入网",
             },
             {
               id: "20",
               index: "merchantCheck",
-              title: "商户审核"
+              title: "商户审核",
             },
             {
               id: "34",
               index: "merchantCode",
-              title: "商户信息配置"
+              title: "商户信息配置",
             },
             {
               id: "40",
               index: "cashQrcode",
-              title: "收银二维码"
+              title: "收银二维码",
             },
             {
               id: "42",
               index: "childMerchant",
-              title: "子商户管理"
-            }
-          ]
+              title: "子商户管理",
+            },
+          ],
         },
         {
           id: "06",
@@ -127,29 +127,29 @@ export default {
             {
               id: "07",
               index: "serviceMerchantRoute",
-              title: "服务商通道"
+              title: "服务商通道",
             },
             {
               id: "21",
               index: "merchantRoute",
-              title: "商户通道"
+              title: "商户通道",
             },
             {
               id: "28",
               index: "merchantIncomingPart",
-              title: "商户进件"
+              title: "商户进件",
             },
             {
               id: "35",
               index: "defaultRoute",
-              title: "默认通道"
+              title: "默认通道",
             },
             {
               id: "43",
               index: "childMerchantIncomingPart",
-              title: "子商户进件"
-            }
-          ]
+              title: "子商户进件",
+            },
+          ],
         },
         {
           id: "25",
@@ -161,14 +161,14 @@ export default {
             {
               id: "26",
               index: "orderManage",
-              title: "交易订单查询"
+              title: "交易订单查询",
             },
             {
               id: "39",
               index: "orderCollect",
-              title: "交易订单汇总"
-            }
-          ]
+              title: "交易订单汇总",
+            },
+          ],
         },
         {
           id: "46",
@@ -180,20 +180,20 @@ export default {
             {
               id: "47",
               index: "ledgerAccountSetting",
-              title: "接收方配置"
+              title: "接收方配置",
             },
             {
               id: "48",
               index: "ledgerAccountManage",
-              title: "分账"
+              title: "分账",
             },
 
             {
               id: "49",
               index: "ledgerAccountList",
-              title: "分账查询"
-            }
-          ]
+              title: "分账查询",
+            },
+          ],
         },
         {
           id: "50",
@@ -203,8 +203,8 @@ export default {
           title: "微信红包",
           subs: [
             { id: "51", index: "redPackageGrant", title: "红包发放" },
-            { id: "52", index: "redPackageQuery", title: "红包查询" }
-          ]
+            { id: "52", index: "redPackageQuery", title: "红包查询" },
+          ],
         },
         {
           id: "27",
@@ -215,8 +215,8 @@ export default {
           subs: [
             { id: "30", index: "settleOrder", title: "订单结算" },
             { id: "31", index: "settleManage", title: "结算管理" },
-            { id: "32", index: "settleBillManage", title: "账单管理" }
-          ]
+            { id: "32", index: "settleBillManage", title: "账单管理" },
+          ],
         },
         {
           id: "1231",
@@ -224,7 +224,7 @@ export default {
           index: "wallet",
           sort: 11,
           title: "钱包",
-          subs: []
+          subs: [],
         },
         {
           id: "1241",
@@ -236,11 +236,11 @@ export default {
             {
               id: "12411",
               index: "realNameAuth",
-              title: "实名认证"
+              title: "实名认证",
             },
             { id: "1261", index: "interfaceRecord", title: "接口调用记录" },
-            { id: "1251", index: "interfaceExplain", title: "接口说明" }
-          ]
+            { id: "1251", index: "interfaceExplain", title: "接口说明" },
+          ],
         },
         {
           id: "03",
@@ -252,19 +252,19 @@ export default {
             {
               id: "24",
               index: "userManage",
-              title: "用户管理"
+              title: "用户管理",
             },
             {
               id: "22",
               index: "roleManage",
-              title: "角色管理"
+              title: "角色管理",
             },
             {
               id: "33",
               index: "dataSetting",
-              title: "数据配置"
-            }
-          ]
+              title: "数据配置",
+            },
+          ],
         },
         {
           id: "29",
@@ -274,10 +274,10 @@ export default {
           sort: 14,
           subs: [
             { id: "36", index: "payTest", title: "支付测试" },
-            { id: "38", index: "sweptTest", title: "被扫测试" }
-          ]
-        }
-      ]
+            { id: "38", index: "sweptTest", title: "被扫测试" },
+          ],
+        },
+      ],
     };
   },
   computed: {
@@ -285,14 +285,14 @@ export default {
       let path = this.$route.path.replace("/", ""); // 获取到地址拦上#号后面的url地
       let from = this.$route.query.from; //获取到地址拦上参数from号后面的url地址
       return from ? from : path;
-    }
+    },
   },
   beforeCreate() {},
   created() {
     let that = this;
     that.initMenuData();
     // 通过 Event Bus 进行组件间通信，来折叠侧边栏
-    bus.$on("collapse", msg => {
+    bus.$on("collapse", (msg) => {
       this.collapse = msg;
       bus.$emit("collapse-content", msg);
     });
@@ -302,9 +302,11 @@ export default {
     znode(menuData, btnPermissList) {
       let me = this;
       for (let menu of menuData) {
-        if (menu.buttonVoList.length != 0) {
-          for (let btn of menu.buttonVoList) {
-            btnPermissList.push(btn.percode);
+        if (menu.buttonVoList != undefined) {
+          if (menu.buttonVoList.length != 0) {
+            for (let btn of menu.buttonVoList) {
+              btnPermissList.push(btn.percode);
+            }
           }
         }
         if (menu.children != undefined) {
@@ -322,10 +324,12 @@ export default {
         icon: "el-icon-s-home",
         index: "dashboard",
         title: "系统首页",
-        sort: 1
+        sort: 1,
       };
       newMenuData.push(homeItem);
+
       let menuData = JSON.parse(window.localStorage.getItem("menuData"));
+      // console.log(menuData);
       // 按钮权限
       let btnPermissList = [];
       that.znode(menuData, btnPermissList);
@@ -339,7 +343,7 @@ export default {
           index: "",
           title: "",
           sort: "",
-          subs: []
+          subs: [],
         };
         for (let routeItem of that.items) {
           if (menuItem.id === routeItem.id) {
@@ -371,13 +375,13 @@ export default {
       // console.log(that.newMenu);
     },
     compare(property) {
-      return function(a, b) {
+      return function (a, b) {
         var value1 = a[property];
         var value2 = b[property];
         return value1 - value2; //升序,降序为value2 - value1
       };
-    }
-  }
+    },
+  },
 };
 </script>
 
