@@ -75,13 +75,13 @@ export default {
       tableData: [],
       toSerproList: [],
       query: {
-        serProCode: ""
+        serProCode: "",
       },
       pageInfo: {
         pageIndex: 1,
         pageSize: 10,
-        total: 0
-      }
+        total: 0,
+      },
     };
   },
   created() {
@@ -95,7 +95,7 @@ export default {
       let params = {};
       params["token"] = localStorage.getItem("tokenData");
       params["serviceType"] = 2;
-      Server.post(Path.querySerProListByCode, params, res => {
+      Server.post(Path.querySerProListByCode, params, (res) => {
         let { code, data, msg, count } = res;
         if (code == 200) {
           that.toSerproList = data;
@@ -108,21 +108,22 @@ export default {
       params["pageNum"] = that.pageInfo.pageIndex;
       params["limit"] = that.pageInfo.pageSize;
       params["serprocode"] = that.query.serProCode;
-      Server.post(Path.queryUsedRecord, params, res => {
-        let { code, data, msg } = res;
+      Server.post(Path.queryUsedRecord, params, (res) => {
+        let { code, data, msg, total } = res;
         if (code == 200) {
           that.tableData = data;
+          that.pageInfo.total = total;
         }
       });
     },
-    refreshFun: function() {
+    refreshFun: function () {
       let that = this;
       that.pageInfo.pageIndex = 1;
       that.pageInfo.pageSize = 10;
       that.query.serProCode = "";
       that.loadData();
     },
-    queryFun: function() {
+    queryFun: function () {
       let that = this;
       that.pageInfo.pageIndex = 1;
       that.pageInfo.pageSize = 10;
@@ -143,8 +144,8 @@ export default {
       that.pageInfo.pageIndex = 1;
       that.pageInfo.pageSize = val;
       that.loadData();
-    }
-  }
+    },
+  },
 };
 </script>
 
