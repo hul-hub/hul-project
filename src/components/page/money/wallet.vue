@@ -90,8 +90,16 @@
         <el-form ref="serItem" :model="serItem" :rules="rules" label-width="110px">
           <el-row :gutter="36" type="flex">
             <el-col :span="12">
-              <el-form-item label="商户编码：" prop="serprocode">
-                <el-input v-model="serItem.serprocode"></el-input>
+              <el-form-item label="商户名称：" prop="serprocode">
+                <el-select v-model="serItem.serprocode" placeholder="请选择" style="width:100%">
+                  <el-option
+                    v-for="(item,index) in toSerproList"
+                    :key="index"
+                    :label="item.serproname"
+                    :value="item.serprocode"
+                  ></el-option>
+                </el-select>
+                <!-- <el-input v-model="serItem.serprocode"></el-input> -->
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -124,7 +132,7 @@
           </el-row>
         </el-form>
         <div slot="footer">
-          <el-button type="primary" @click="cancelFun">取 消</el-button>
+          <el-button type="primary" @click="cancelFun">关闭</el-button>
           <el-button type="primary" @click="okFun">确 定</el-button>
         </div>
       </Modal>
@@ -150,7 +158,7 @@ export default {
       },
       rules: {
         serprocode: [
-          { required: true, message: "请输入商户编码", trigger: "blur" }
+          { required: true, message: "请输入商户编码", trigger: "change" }
         ],
         orderamount: [
           { required: true, message: "请输入充值金额", trigger: "blur" }
@@ -224,6 +232,9 @@ export default {
         serprocode: "",
         payType: ""
       };
+      that.qrcodeUrl = "";
+      that.loadData();
+      that.loadBalance();
       that.$refs.serItem.resetFields();
     },
     queryBasePayType() {

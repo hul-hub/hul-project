@@ -5,16 +5,11 @@
         <el-form :model="query" label-width="80px" label-position="left" size="small">
           <el-row :gutter="36" align="center">
             <el-col :span="6">
-              <el-form-item label="账号名称:" class="query-form-item">
+              <el-form-item label="用户名称:" class="query-form-item">
                 <el-input v-model="query.username"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
-              <el-form-item label="用户名称:" class="query-form-item">
-                <el-input v-model="query.loginname"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
+            <el-col :span="18">
               <el-row justify="end" type="flex">
                 <el-button type="primary" icon="el-icon-search" size="small" @click="queryFun">查询</el-button>
                 <el-button
@@ -36,7 +31,7 @@
           size="small"
           icon="el-icon-circle-plus-outline"
           class="handle-del mr10"
-          @click="editVisible = true"
+          @click="addFun"
           v-if="hasPerm('user_create')"
         >新增</el-button>
       </div>
@@ -48,9 +43,8 @@
         header-cell-class-name="table-header"
       >
         <el-table-column type="index" width="70" label="序号" align="center"></el-table-column>
-        <el-table-column prop="usercode" label="ID" min-width="120" align="center"></el-table-column>
-        <el-table-column prop="username" min-width="160" label="账户名称" align="center"></el-table-column>
-        <el-table-column prop="loginname" label="用户名称" min-width="100" align="center"></el-table-column>
+        <el-table-column prop="usercode" label="用户账号" min-width="120" align="center"></el-table-column>
+        <el-table-column prop="username" label="用户名称" min-width="100" align="center"></el-table-column>
         <el-table-column prop="creatdate" label="注册时间" min-width="100" align="center"></el-table-column>
         <el-table-column label="角色" align="center">
           <template slot-scope="scope">
@@ -103,11 +97,11 @@
         :title="userItem.usercode?'编辑':'新增'"
       >
         <el-form ref="userItem" :model="userItem" :rules="rules" label-width="110px">
-          <el-form-item label="账户名称：" prop="username">
-            <el-input v-model="userItem.username"></el-input>
+          <el-form-item label="用户账号：" prop="usercode">
+            <el-input v-model="userItem.usercode" :disabled="haveUsercode"></el-input>
           </el-form-item>
-          <el-form-item label="用户名称：" prop="loginname">
-            <el-input v-model="userItem.loginname"></el-input>
+          <el-form-item label="用户名称：" prop="username">
+            <el-input v-model="userItem.username"></el-input>
           </el-form-item>
           <el-form-item label="用户密码：" prop="pwd">
             <el-input type="password" v-model="userItem.pwd"></el-input>
@@ -119,16 +113,6 @@
                 :key="index"
                 :label="item.rolename"
                 :value="item.rolecode"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="所属商户：" prop="serprocode">
-            <el-select v-model="userItem.serprocode" placeholder="请选择" style="width:100%">
-              <el-option
-                v-for="(item,index) in toSerproList"
-                :key="index"
-                :label="item.serproname"
-                :value="item.serprocode"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -151,44 +135,44 @@ export default {
     return {
       toSerproList: [],
       query: {
-        username: "", // 账号名称
-        loginname: "" //用户名称
+        username: "", //用户名称
       },
       pageInfo: {
         pageIndex: 1,
         pageSize: 10,
-        total: 0
+        total: 0,
       },
       tableData: [],
       userItem: {
         usercode: "",
         username: "",
-        loginname: "",
         pwd: "",
         rid: "",
-        serprocode: ""
       },
       roleList: [],
       rules: {
-        username: [
-          { required: true, message: "请输入账户名称", trigger: "blur" }
+        usercode: [
+          { required: true, message: "请输入用户账号", trigger: "blur" },
+          {
+            pattern: /^\d{10,20}$/,
+            message: "请输入10-20位数字，建议手机号",
+            trigger: "blur",
+          },
         ],
-        loginname: [
-          { required: true, message: "请输入用户名称", trigger: "blur" }
+        username: [
+          { required: true, message: "请输入用户名称", trigger: "blur" },
         ],
         pwd: [{ required: true, message: "请输入用户密码", trigger: "blur" }],
         rid: [{ required: true, message: "请选择用户角色", trigger: "change" }],
-        serprocode: [
-          { required: true, message: "请选择所属商户", trigger: "change" }
-        ]
       },
       multipleSelection: [],
       delList: [],
       editVisible: false,
+      haveUsercode: false,
       pageTotal: 0,
       form: {},
       idx: -1,
-      id: -1
+      id: -1,
     };
   },
   created() {
@@ -198,12 +182,17 @@ export default {
     that.querySerProListByCode();
   },
   methods: {
+    addFun() {
+      let that = this;
+      that.editVisible = true;
+      that.haveUsercode = false;
+    },
     querySerProListByCode() {
       let that = this;
       let params = {};
       params["token"] = localStorage.getItem("tokenData");
       params["serviceType"] = 2;
-      Server.post(Path.querySerProListByCode, params, res => {
+      Server.post(Path.querySerProListByCode, params, (res) => {
         let { code, data, msg, count } = res;
         if (code == 200) {
           that.toSerproList = data;
@@ -215,10 +204,8 @@ export default {
       that.userItem = {
         usercode: "",
         username: "",
-        loginname: "",
         pwd: "",
         rid: "",
-        serprocode: ""
       };
     },
     cancelEdit() {
@@ -230,22 +217,21 @@ export default {
     // 保存编辑
     saveEdit() {
       let that = this;
-      that.$refs.userItem.validate(valid => {
+      that.$refs.userItem.validate((valid) => {
         if (valid) {
           let url = "";
           let params = {};
-          if (that.userItem.usercode) {
+          if (that.haveUsercode) {
             url = Path.updUser;
-            params["usercode"] = that.userItem.usercode;
           } else {
             url = Path.addUser;
           }
+          params["usercode"] = that.userItem.usercode;
           params["username"] = that.userItem.username;
-          params["loginname"] = that.userItem.loginname;
           params["pwd"] = that.userItem.pwd;
           params["rid"] = that.userItem.rid;
-          params["serprocode"] = that.userItem.serprocode;
-          Server.post(url, params, res => {
+          params["serprocode"] = localStorage.getItem("serprocode");
+          Server.post(url, params, (res) => {
             let { code, data, msg } = res;
             if (code == 200) {
               that.editVisible = false;
@@ -261,7 +247,7 @@ export default {
       Server.post(
         Path.updateStatus,
         { status: status, usercode: usercode },
-        res => {
+        (res) => {
           let { code, data, msg } = res;
           if (code == 200) {
             that.$message.success("状态更新成功!");
@@ -270,17 +256,16 @@ export default {
         }
       );
     },
-    queryFun: function() {
+    queryFun: function () {
       let that = this;
       that.pageInfo.pageIndex = 1;
       that.pageInfo.pageSize = 10;
       that.loadData();
     },
-    refreshFun: function() {
+    refreshFun: function () {
       let that = this;
       that.query = {
         username: "",
-        loginname: ""
       };
       that.pageInfo.pageIndex = 1;
       that.pageInfo.pageSize = 10;
@@ -288,7 +273,7 @@ export default {
     },
     loadRoleList() {
       let that = this;
-      Server.post(Path.queryRoleList, { page: 1, limit: 999 }, res => {
+      Server.post(Path.queryRoleList, { page: 1, limit: 999 }, (res) => {
         let { code, data, msg } = res;
         if (code == 200) {
           that.roleList = data;
@@ -301,8 +286,7 @@ export default {
       params["page"] = that.pageInfo.pageIndex;
       params["limit"] = that.pageInfo.pageSize;
       params["username"] = that.query.username;
-      params["loginname"] = that.query.loginname;
-      Server.post(Path.queryUserList, params, res => {
+      Server.post(Path.queryUserList, params, (res) => {
         let { code, data, msg, count } = res;
         if (code == 200) {
           that.tableData = data;
@@ -318,11 +302,11 @@ export default {
           "确定要重置该用户密码吗？点击确定则重置该用户密码！",
           "重置密码",
           {
-            type: "warning"
+            type: "warning",
           }
         )
         .then(() => {
-          Server.post(Path.resetPwd, { usercode: row.usercode }, res => {
+          Server.post(Path.resetPwd, { usercode: row.usercode }, (res) => {
             let { code, data, msg } = res;
             if (code == 200) {
               that.loadData();
@@ -348,16 +332,15 @@ export default {
     },
     // 编辑操作
     handleEdit(index, row) {
-      console.log(row);
+      // console.log(row);
       let that = this;
       // that.userItem = row;
       that.userItem.usercode = row.usercode;
       that.userItem.username = row.username;
-      that.userItem.loginname = row.loginname;
       that.userItem.pwd = row.pwd;
       that.userItem.rid = row.roleVo.rolecode;
-      that.userItem.serprocode = row.roleVo.serprocode;
       that.editVisible = true;
+      that.haveUsercode = true;
       console.log(that.userItem);
     },
     // 分页导航
@@ -375,8 +358,8 @@ export default {
       that.pageInfo.pageIndex = 1;
       that.pageInfo.pageSize = val;
       that.loadData();
-    }
-  }
+    },
+  },
 };
 </script>
 

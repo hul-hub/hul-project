@@ -11,8 +11,8 @@
         @submit.native.prevent
       >
         <el-form-item prop="username">
-          <el-input v-model="param.username" placeholder="请输入编码">
-            <span class="input-button" slot="prepend" icon="el-icon-lx-people">用户名</span>
+          <el-input v-model="param.username" placeholder="请输入用户账号">
+            <span class="input-button" slot="prepend" icon="el-icon-lx-people">用户账号</span>
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
@@ -44,23 +44,23 @@
 import Server from "@/service/request";
 import Path from "@/service/Path";
 export default {
-  data: function() {
+  data: function () {
     return {
       param: {
         username: "",
         password: "",
-        verifyCode: ""
+        verifyCode: "",
       },
       verifyCodeUrl: "",
       rules: {
         username: [
-          { required: true, message: "请输入用户名", trigger: "blur" }
+          { required: true, message: "请输入用户账号", trigger: "blur" },
         ],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
         verifyCode: [
-          { required: true, message: "请输入验证码", trigger: "blur" }
-        ]
-      }
+          { required: true, message: "请输入验证码", trigger: "blur" },
+        ],
+      },
     };
   },
   created() {
@@ -75,7 +75,7 @@ export default {
         Path.verifyCodePost,
         { timestamp: timestamp },
         { responseType: "arraybuffer" }, // 图片接收responseType: "arraybuffer"
-        res => {
+        (res) => {
           // console.log(res);
           that.verifyCodeUrl =
             "data:image/png;base64," +
@@ -91,18 +91,19 @@ export default {
     changeInput(event) {},
     submitForm() {
       let that = this;
-      that.$refs.login.validate(valid => {
+      that.$refs.login.validate((valid) => {
         if (valid) {
           let params = {};
           params["usercode"] = that.param.username;
           params["pwd"] = that.param.password;
           // params["noVerifyCode"] = "1";
           params["verifyCode"] = that.param.verifyCode;
-          Server.post(Path.login, params, res => {
+          Server.post(Path.login, params, (res) => {
             let { code, data, msg, menu, username } = res;
             if (code === "200") {
-              console.log(unescape(username));
+              // console.log(unescape(username));
               localStorage.setItem("username", unescape(username));
+              localStorage.setItem("serprocode", that.param.username);
               that.$message.success("登录成功");
               localStorage.setItem("token", "bearer" + data); // 存入head里面请求后天
               localStorage.setItem("tokenData", data); // 某些接口的参数里面需要携带这个参数
@@ -115,8 +116,8 @@ export default {
           });
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
