@@ -88,6 +88,8 @@
       <el-table
         :data="tableData"
         border
+        show-summary
+        :summary-method="getSummaries"
         class="table"
         ref="multipleTable"
         header-cell-class-name="table-header"
@@ -115,8 +117,8 @@
           align="center"
         ></el-table-column>
         <!-- <el-table-column prop="createdate" label="上游订单号" align="center"></el-table-column> -->
-        <el-table-column prop="orderamount" label="交易金额" min-width="95" align="center"></el-table-column>
-        <el-table-column prop="commission" label="手续费" align="center"></el-table-column>
+        <el-table-column prop="orderamount" label="交易金额" sortable min-width="110" align="center"></el-table-column>
+        <el-table-column prop="commission" label="手续费" sortable min-width="100" align="center"></el-table-column>
         <el-table-column label="交易状态" min-width="95" align="center">
           <template slot-scope="scope">
             <span>{{scope.row.paystatus | filterOrderStatus}}</span>
@@ -183,12 +185,12 @@ export default {
         paystatus: "",
         reqtransstartdate: "",
         reqtransenddate: "",
-        mchOrderid: ""
+        mchOrderid: "",
       },
       pageInfo: {
         pageIndex: 1,
         pageSize: 10,
-        total: 0
+        total: 0,
       },
       payTypeWayList: [],
       toSerproList: [],
@@ -198,10 +200,10 @@ export default {
         { label: "未支付", value: "NOTPAY" },
         { label: "已关闭", value: "CLOSED" },
         { label: "已冲正", value: "REVERSE" },
-        { label: "已撤销", value: "REVOK" }
+        { label: "已撤销", value: "REVOK" },
       ],
       serProList: [],
-      tableData: []
+      tableData: [],
     };
   },
   created() {
@@ -213,12 +215,41 @@ export default {
   },
 
   methods: {
+    getSummaries(param) {
+      const { columns, data } = param;
+      const sums = [];
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = "合计";
+          return;
+        }
+        const values = data.map((item) => Number(item[column.property]));
+        if (
+          column.property === "orderamount" ||
+          column.property === "commission"
+        ) {
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr);
+            if (!isNaN(value)) {
+              return Math.round((prev + curr) * 100) / 100;
+            } else {
+              return prev;
+            }
+          }, 0);
+          sums[index] += " 元";
+        } else {
+          sums[index] = "--";
+        }
+      });
+
+      return sums;
+    },
     changePay(arrStr) {
       let that = this;
       that.query.paytypecode = arrStr.split("-")[0];
       that.query.paywaycode = arrStr.split("-")[1];
     },
-    queryFun: function() {
+    queryFun: function () {
       let that = this;
       that.pageInfo.pageIndex = 1;
       that.pageInfo.pageSize = 10;
@@ -237,7 +268,7 @@ export default {
         new Date(year, month, day, 23, 59, 59)
       );
     },
-    refreshFun: function() {
+    refreshFun: function () {
       let that = this;
       that.query = {
         querySerprocode: "",
@@ -246,7 +277,7 @@ export default {
         paystatus: "",
         reqtransstartdate: "",
         reqtransenddate: "",
-        mchOrderid: ""
+        mchOrderid: "",
       };
       that.initDate();
       that.pageInfo.pageIndex = 1;
@@ -265,7 +296,7 @@ export default {
       params["reqtransstartdate"] = that.query.reqtransstartdate;
       params["reqtransenddate"] = that.query.reqtransenddate;
       params["mchOrderid"] = that.query.mchOrderid;
-      Server.post(Path.orderQueryOrderList, params, res => {
+      Server.post(Path.orderQueryOrderList, params, (res) => {
         let { code, data, msg, count } = res;
         if (code == 200) {
           that.tableData = data;
@@ -275,7 +306,7 @@ export default {
     },
     querySerProListSelect() {
       let that = this;
-      Server.post(Path.querySerProListSelect, { serviceType: 2 }, res => {
+      Server.post(Path.querySerProListSelect, { serviceType: 2 }, (res) => {
         that.toSerproList = res;
       });
     },
@@ -289,45 +320,49 @@ export default {
         serProCode: row.serprocode,
         flag: "1", // 用于判断是内部系统还是外部系统
         sign_type: "", //签名类型
-        signature: "" //签名
+        signature: "", //签名
       };
-      Server.postJson(Path.hoopayQueryOrder, JSON.stringify(jsonData), res => {
-        let { respCode, respMsg, payStatus } = res;
-        // console.log(data);s
-        if (respCode == "00") {
-          switch (payStatus) {
-            case "00":
-              that.$message.success("支付成功");
-              break;
-            case "01":
-              that.$message.success("转入退款");
-              break;
-            case "02":
-              that.$message.success("交易结果未明");
-              break;
-            case "03":
-              that.$message.success("已关闭");
-              break;
-            case "04":
-              that.$message.success("已撤销（付款码支付）");
-              break;
-            case "05":
-              that.$message.success("用户支付中");
-              break;
-            case "06":
-              that.$message.success("支付失败");
-              break;
+      Server.postJson(
+        Path.hoopayQueryOrder,
+        JSON.stringify(jsonData),
+        (res) => {
+          let { respCode, respMsg, payStatus } = res;
+          // console.log(data);s
+          if (respCode == "00") {
+            switch (payStatus) {
+              case "00":
+                that.$message.success("支付成功");
+                break;
+              case "01":
+                that.$message.success("转入退款");
+                break;
+              case "02":
+                that.$message.success("交易结果未明");
+                break;
+              case "03":
+                that.$message.success("已关闭");
+                break;
+              case "04":
+                that.$message.success("已撤销（付款码支付）");
+                break;
+              case "05":
+                that.$message.success("用户支付中");
+                break;
+              case "06":
+                that.$message.success("支付失败");
+                break;
+            }
+          } else {
+            that.$message.error(respMsg);
           }
-        } else {
-          that.$message.error(respMsg);
+          that.loadData();
         }
-        that.loadData();
-      });
+      );
     },
     queryPayTypeAndWay() {
       let that = this;
       let params = {};
-      Server.get(Path.queryPayTypeAndWay, {}, res => {
+      Server.get(Path.queryPayTypeAndWay, {}, (res) => {
         let { code, data, msg } = res;
         if (code == 200) {
           that.payTypeWayList = data;
@@ -354,17 +389,17 @@ export default {
         refundAmount: parseInt(row.orderamount * 100),
         mchRefundId: that.ran(13),
         serProCode: row.serprocode,
-        flag: "1"
+        flag: "1",
       };
       that
         .$confirm("确定要退款吗？点击确定则退款！", "退款", {
-          type: "warning"
+          type: "warning",
         })
         .then(() => {
           Server.postJson(
             Path.hoopayRefundOrder,
             JSON.stringify(jsonData),
-            res => {
+            (res) => {
               let { respMsg, respCode } = res;
               if (respCode == "00") {
                 that.loadData();
@@ -391,7 +426,7 @@ export default {
       that.pageInfo.pageIndex = 1;
       that.pageInfo.pageSize = val;
       that.loadData();
-    }
+    },
   },
   filters: {
     filterOrderStatus(val) {
@@ -459,8 +494,8 @@ export default {
         default:
           return "支付方式未知";
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
