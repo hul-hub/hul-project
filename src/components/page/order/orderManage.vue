@@ -98,7 +98,7 @@
         <el-table-column
           prop="serproname"
           label="商户名称"
-          min-width="180"
+          min-width="220"
           :show-overflow-tooltip="true"
           align="center"
         ></el-table-column>
@@ -215,6 +215,9 @@ export default {
   },
 
   methods: {
+    // 今天是2020年7月27日，工资还是没有发，公司的人连个解释都没有。
+    // 后台开发人员全部都提出了离职。
+    // 我想我也快了把。
     getSummaries(param) {
       const { columns, data } = param;
       const sums = [];
