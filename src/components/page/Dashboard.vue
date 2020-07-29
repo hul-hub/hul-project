@@ -1,6 +1,39 @@
 <template>
   <div>
-    <div class="search">
+    <div class="container">
+      <div class="time">
+        <p style="color:#fff;font-size:14px;">
+          hello！，上午好！ 欢迎使用胡掌柜云服务管理系统。当前时间为：
+          <span>{{nowTime}}</span>
+          <span>{{week}}</span>
+        </p>
+      </div>
+      <div class="hot">
+        <span style="font-size:14px;font-weight:550;">最新公告</span>
+        <img
+          style="    height: 20px;
+    width: 20px;
+    margin-left: 10px;"
+          src="../../assets/img/hot.png"
+          alt
+        />
+      </div>
+      <div>
+        <h2 style="text-align:center;font-weight:400;margin-top:40px;font-size: 26px;">{{noticeItem.noticetitle}}</h2>
+        <div style="text-align:right;font-size: 16px;">
+          <span>发布人:{{noticeItem.creatername}}</span>&nbsp;&nbsp;
+          <span>发布时间:{{noticeItem.createdate}}</span>
+        </div>
+        <hr
+          style="background-color: #e6e6e6;height: 1px;
+    margin: 10px 0;
+    border: 0;
+    clear: both;"
+        />
+        <div v-html="noticeItem.noticecontent" style="margin-left: 75px;font-size: 16px;"></div>
+      </div>
+    </div>
+    <!-- <div class="search">
       <el-card class="box-card">
         <div class="content-head">
           <div class="content-head-head">
@@ -52,7 +85,7 @@
           </el-card>
         </el-col>
       </el-row>
-    </div>
+    </div>-->
   </div>
 </template>
 
@@ -68,23 +101,89 @@ export default {
       totalItem: {
         serviceTotal: 0,
         merTotal: 0,
-        userTotal: 0
+        userTotal: 0,
       },
       options: {},
-      options2: {}
+      options2: {},
+      noticeItem: {},
+      nowTime: "",
+      week: "",
     };
   },
   components: {
-    Schart
+    Schart,
   },
   created() {
     let that = this;
-    that.loadUser();
-    that.loadData();
+    // that.loadUser();
+    // that.loadData();
     // that.initWeekData();
+    that.nowTimes();
+    that.loadNotice();
   },
   computed: {},
   methods: {
+    //显示当前时间（年月日时分秒）
+    timeFormate(timeStamp) {
+      let year = new Date(timeStamp).getFullYear();
+      let month =
+        new Date(timeStamp).getMonth() + 1 < 10
+          ? "0" + (new Date(timeStamp).getMonth() + 1)
+          : new Date(timeStamp).getMonth() + 1;
+      let date =
+        new Date(timeStamp).getDate() < 10
+          ? "0" + new Date(timeStamp).getDate()
+          : new Date(timeStamp).getDate();
+      let hh =
+        new Date(timeStamp).getHours() < 10
+          ? "0" + new Date(timeStamp).getHours()
+          : new Date(timeStamp).getHours();
+      let mm =
+        new Date(timeStamp).getMinutes() < 10
+          ? "0" + new Date(timeStamp).getMinutes()
+          : new Date(timeStamp).getMinutes();
+      let ss =
+        new Date(timeStamp).getSeconds() < 10
+          ? "0" + new Date(timeStamp).getSeconds()
+          : new Date(timeStamp).getSeconds();
+      this.nowTime =
+        year +
+        "年" +
+        month +
+        "月" +
+        date +
+        "日" +
+        " " +
+        hh +
+        ":" +
+        mm +
+        ":" +
+        ss;
+    },
+    nowTimes() {
+      this.timeFormate(new Date());
+      this.getDay();
+      setInterval(this.nowTimes, 1000);
+      this.clear();
+    },
+    clear() {
+      clearInterval(this.nowTimes);
+      this.nowTimes = null;
+    },
+    getDay() {
+      var now = new Date();
+      var day = now.getDay();
+      var weeks = new Array(
+        "星期日",
+        "星期一",
+        "星期二",
+        "星期三",
+        "星期四",
+        "星期五",
+        "星期六"
+      );
+      this.week = weeks[day];
+    },
     // 初始化近7天时间
     initWeekData() {
       var weekArray = [];
@@ -98,15 +197,15 @@ export default {
       }
       return weekArray;
     },
-    loadUser() {
+    loadNotice() {
       let that = this;
       let params = {};
       params["page"] = 1;
-      params["limit"] = 999;
-      Server.post(Path.queryUserList, params, res => {
+      params["limit"] = 10;
+      Server.post(Path.queryNoticeList, params, (res) => {
         let { code, data, msg } = res;
         if (code == 200) {
-          that.totalItem.userTotal = data.length;
+          that.noticeItem = data[0];
         }
       });
     },
@@ -117,7 +216,7 @@ export default {
       let params = {};
       params["page"] = 1;
       params["limit"] = 999;
-      Server.post(Path.querySerProList, params, res => {
+      Server.post(Path.querySerProList, params, (res) => {
         let { code, data, msg } = res;
         if (code == 200) {
           let serArr = [];
@@ -151,16 +250,16 @@ export default {
           that.options = {
             type: "bar",
             title: {
-              text: "近7天服务商新增情况"
+              text: "近7天服务商新增情况",
             },
             xRorate: 25,
             labels: serTime,
             datasets: [
               {
                 label: "服务商",
-                data: serData
-              }
-            ]
+                data: serData,
+              },
+            ],
           };
           var merTime = [];
           var merData = [];
@@ -172,29 +271,42 @@ export default {
           that.options2 = {
             type: "bar",
             title: {
-              text: "近7天商户新增情况"
+              text: "近7天商户新增情况",
             },
             xRorate: 25,
             labels: merTime,
             datasets: [
               {
                 label: "商户",
-                data: merData
-              }
-            ]
+                data: merData,
+              },
+            ],
           };
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
 
 <style scoped>
-.schart {
-  width: 100%;
-  height: 300px;
+.time {
+  margin-bottom: 20px;
+  padding: 15px;
+  line-height: 22px;
+  border-left: 5px solid rgb(21, 74, 154);
+  border-radius: 0 2px 2px 0;
+  background-color: rgb(21, 74, 154) !important;
+}
+.hot {
+  padding: 10px 15px;
+  border-left: 5px solid rgb(21, 74, 154);
+  border-radius: 0 2px 2px 0;
+  background-color: #f2f2f2;
+  line-height: 22px;
+  display: flex;
+  align-items: center;
 }
 .content-head {
   display: flex;

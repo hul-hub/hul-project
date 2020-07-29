@@ -86,6 +86,11 @@ export default new Router({
                     meta: { title: '商户信息配置' }
                 },
                 {
+                    path: '/refundManage',
+                    component: () => import(/* webpackChunkName: "dataSetting" */ '../components/page/merchant/refundManage.vue'),
+                    meta: { title: '发起退款' }
+                },
+                {
                     path: '/merchantCodeDetail',
                     component: () => import(/* webpackChunkName: "merchantCodeDetail" */ '../components/page/merchant/merchantCodeDetail.vue'),
                     meta: { title: '商户详情' }

@@ -106,6 +106,11 @@ export default {
               title: "商户信息配置",
             },
             {
+              id: "37",
+              index: "refundManage",
+              title: "发起退款",
+            },
+            {
               id: "40",
               index: "cashQrcode",
               title: "收银二维码",
