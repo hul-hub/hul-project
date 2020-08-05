@@ -99,7 +99,7 @@ Vue.prototype._imageError = function (e) {
   e.target.src = DefauleImg;
 };
 
-// axios.defaults.withCredentials = true
+axios.defaults.withCredentials = true
 
 const Bus = new Vue(); //中央事件总线
 /* eslint-disable no-new */

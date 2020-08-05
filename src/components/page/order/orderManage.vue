@@ -85,6 +85,15 @@
       </el-card>
     </div>
     <div class="container">
+      <div class="handle-box">
+        <el-button
+          type="primary"
+          size="small"
+          icon="el-icon-download"
+          class="handle-del mr10"
+          @click="exportExcel"
+        >导出Excel</el-button>
+      </div>
       <el-table
         :data="tableData"
         border
@@ -173,6 +182,7 @@
 import Server from "@/service/request";
 import Path from "@/service/Path";
 import { timestampToTimeHHMMSS } from "@/util/util.js";
+import moment from "moment";
 export default {
   name: "orderManage",
   components: {},
@@ -218,6 +228,53 @@ export default {
     // 今天是2020年7月27日，工资还是没有发，公司的人连个解释都没有。
     // 后台开发人员全部都提出了离职。
     // 我想我也快了把。
+    exportExcel() {
+      let that = this;
+      require.ensure([], () => {
+        const { export_json_to_excel } = require("vendor/Export2Excel");
+
+        const tHeader = [
+          "商户名称",
+          "商户订单号",
+          "系统订单号",
+          "上游订单号",
+          "交易金额",
+          "支付状态",
+          "支付类型",
+          "交易开始时间",
+          "交易结束时间",
+          "手续费",
+        ];
+
+        const filterVal = [
+          "serproname",
+          "mchOrderid",
+          "hoopayOrderid",
+          "createdate",
+          "orderamount",
+          "paystatus",
+          "paytypecode",
+          "reqtransstartdate",
+          "reqtransenddate",
+          "commission",
+        ];
+        let tList = this.tableData.filter((element, index, self) => {
+          element.paystatus = this.filterOrderStatus(element.paystatus);
+          element.paytypecode =
+            this.filterPaytype(element.paytypecode) +
+            this.filterGetPayWay(element.paywaycode);
+          return element;
+        });
+        console.log(tList);
+        const list = tList;
+        const data = this.formatJson(filterVal, list);
+        console.log(data);
+        export_json_to_excel(tHeader, data, "交易流水记录");
+      });
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map((v) => filterVal.map((j) => v[j]));
+    },
     getSummaries(param) {
       const { columns, data } = param;
       const sums = [];
@@ -414,6 +471,72 @@ export default {
           );
         })
         .catch(() => {});
+    },
+    filterOrderStatus(val) {
+      let payStatus = "";
+      switch (val) {
+        case "SUCCESS":
+          payStatus = "支付成功";
+          break;
+        case "REFUND":
+          payStatus = "转入退款";
+          break;
+        case "NOTPAY":
+          payStatus = "未支付";
+          break;
+        case "CLOSE":
+          payStatus = "已关闭";
+          break;
+        case "REVERSE":
+          payStatus = "已冲正";
+          break;
+        case "REVOK":
+          payStatus = "已撤销";
+          break;
+      }
+      return payStatus;
+    },
+    filterPaytype(paytypecode) {
+      switch (paytypecode) {
+        case "01":
+          return "微信-";
+        case "02":
+          return "支付宝-";
+        case "03":
+          return "银联-";
+        case "04":
+          return "百度-";
+        case "05":
+          return "京东-";
+        case "06":
+          return "QQ钱包-";
+        default:
+          return "暂无-";
+      }
+    },
+    filterGetPayWay(payWayCode) {
+      switch (payWayCode) {
+        case "AP":
+          return "APP支付";
+        case "DF":
+          return "代付";
+        case "FK":
+          return "付款码支付";
+        case "FW":
+          return "服务窗支付";
+        case "GZ":
+          return "公众号支付";
+        case "H5":
+          return "H5支付";
+        case "KJ":
+          return "快捷支付";
+        case "SM":
+          return "扫码支付";
+        case "WG":
+          return "网关支付";
+        default:
+          return "支付方式未知";
+      }
     },
     // 分页导航
     handlePageChange(val) {

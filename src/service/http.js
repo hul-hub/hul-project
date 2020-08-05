@@ -14,7 +14,7 @@ let ReqFilter = [
 let baseUrl = process.env.BASE_API;
 http.defaults.baseURL = baseUrl;
 // 后台A控制器request.getSession().setAttribute() B控制器request.getSession().getAttribute() 为null
-http.defaults.withCredentials = true; 
+// http.defaults.withCredentials = true; 
 http.defaults.headers["Content-Type"] = "application/x-www-form-urlencoded;charset=UTF-8";
 // 自动设置语言
 const navLang = (navigator.language || navigator.browserLanguage).toLowerCase();
