@@ -60,6 +60,21 @@
             </div>
           </div>
         </el-tab-pane>
+
+        <el-tab-pane label="渠道号配置">
+          <div class="left-item" style="display:flex">
+            <p style="display:flex;align-items:center;">
+              <span>渠道号：</span>
+              &nbsp;&nbsp;
+              <el-input v-model="temItem.routeid" :disabled="isRouteId"></el-input>
+            </p>
+            <div style="margin-left:20px;">
+              <el-button type="primary" v-if="isRouteId" @click="isRouteId = false">修改</el-button>
+              <el-button type="primary" v-if="!isRouteId" @click="routeOkFun">确定</el-button>
+              <el-button type="primary" v-if="!isRouteId" @click="isRouteId = true">取消</el-button>
+            </div>
+          </div>
+        </el-tab-pane>
         <el-tab-pane label="商户通道">
           <el-table
             :data="tableTemplate"
@@ -191,32 +206,36 @@ export default {
       routeTemplateList: [],
       templateVisible: false,
       subVisible: false,
+      isRouteId: true,
       templateItem: {
         templatecode: "",
         serprocode: "",
         routesecretkey: "",
         appid: "",
         openid: "",
-        routeid: ""
+        routeid: "",
       },
       subItem: {
         id: "",
-        routeSecretKey: ""
+        routeSecretKey: "",
+      },
+      temItem: {
+        routeid: "",
       },
       templateItemRules: {
         templatecode: [
-          { required: true, message: "请选择通道渠道", trigger: "change" }
+          { required: true, message: "请选择通道渠道", trigger: "change" },
         ],
         routesecretkey: [
-          { required: true, message: "请输入商户密钥", trigger: "blur" }
+          { required: true, message: "请输入商户密钥", trigger: "blur" },
         ],
         appid: [{ required: true, message: "请输入appId", trigger: "blur" }],
-        openid: [{ required: true, message: "请输入openId", trigger: "blur" }]
+        openid: [{ required: true, message: "请输入openId", trigger: "blur" }],
       },
       subItemRules: {
         routeSecretKey: [
-          { required: true, message: "请输入子商户密钥", trigger: "blur" }
-        ]
+          { required: true, message: "请输入子商户密钥", trigger: "blur" },
+        ],
       },
       tableSubSerpro: [],
       serproItem: {
@@ -225,8 +244,8 @@ export default {
         upSerProName: "",
         address: "",
         phone: "",
-        serprocode: ""
-      }
+        serprocode: "",
+      },
     };
   },
   created() {
@@ -250,7 +269,7 @@ export default {
       params["page"] = 1;
       params["limit"] = 99;
       params["serProCode"] = that.id;
-      Server.post(Path.listSubSerpro, params, res => {
+      Server.post(Path.listSubSerpro, params, (res) => {
         let { code, data, msg } = res;
         if (code == 200) {
           that.tableSubSerpro = data;
@@ -263,10 +282,18 @@ export default {
       params["page"] = 1;
       params["limit"] = 99;
       params["serProCode"] = that.id;
-      Server.post(Path.templatelistMess, params, res => {
+      Server.post(Path.templatelistMess, params, (res) => {
         let { code, data, msg } = res;
         if (code == 200) {
           that.tableTemplateMess = data;
+          if (data.length > 0) {
+            for (let item of data) {
+              // console.log(item);
+              if(item.templatecode == "12"){
+                that.temItem.routeid = item.routeId;
+              }
+            }
+          }
         }
       });
     },
@@ -276,7 +303,7 @@ export default {
       params["page"] = 1;
       params["limit"] = 99;
       params["serProCode"] = that.id;
-      Server.post(Path.queryRouteListByCode, params, res => {
+      Server.post(Path.queryRouteListByCode, params, (res) => {
         let { code, data, msg } = res;
         if (code == 200) {
           that.tableTemplate = data;
@@ -288,7 +315,7 @@ export default {
     getRouteTemplateList() {
       let that = this;
       let params = {};
-      Server.post(Path.getRouteTemplateList, params, res => {
+      Server.post(Path.getRouteTemplateList, params, (res) => {
         let { code, data, msg } = res;
         if (code == 200) {
           that.routeTemplateList = data;
@@ -304,14 +331,33 @@ export default {
         routesecretkey: "",
         appid: "",
         openid: "",
-        routeid: ""
+        routeid: "",
       };
       that.$refs.templateItem.resetFields();
+    },
+    routeOkFun() {
+      let that = this;
+      let params = {};
+      // console.log(that.id)
+      params["templatecode"] = "12";
+      params["serprocode"] = that.id;
+      params["routeid"] = that.temItem.routeid;
+      
+      Server.post(Path.saveRouteTemplate, params, (res) => {
+        let { code, data, msg } = res;
+        if (code == 200) {
+          that.isRouteId = true;
+          that.templatelistMess();
+          that.$message.success("操作成功!");
+        } else {
+          that.$message.error(msg);
+        }
+      });
     },
     // 保存编辑
     saveTemplateFun() {
       let that = this;
-      that.$refs.templateItem.validate(valid => {
+      that.$refs.templateItem.validate((valid) => {
         if (valid) {
           let url = "";
           let params = {};
@@ -321,14 +367,14 @@ export default {
           params["appid"] = that.templateItem.appid;
           params["openid"] = that.templateItem.openid;
           params["routeid"] = that.templateItem.routeid;
-          Server.post(Path.insertRouteKey, params, res => {
+          Server.post(Path.insertRouteKey, params, (res) => {
             let { code, data, msg } = res;
             if (code == 200) {
               that.cancelTemplateFun();
               that.templatelistMess();
               that.$message.success("操作成功!");
             } else {
-              that.$message.success(msg);
+              that.$message.error(msg);
             }
           });
         }
@@ -339,27 +385,27 @@ export default {
       that.subVisible = false;
       that.subItem = {
         id: "",
-        routeSecretKey: ""
+        routeSecretKey: "",
       };
       that.$refs.subItem.resetFields();
     },
     // 保存编辑
     saveSubFun() {
       let that = this;
-      that.$refs.subItem.validate(valid => {
+      that.$refs.subItem.validate((valid) => {
         if (valid) {
           let url = "";
           let params = {};
           params["id"] = that.subItem.id;
           params["routeSecretKey"] = that.subItem.routeSecretKey;
-          Server.post(Path.insertSubRouteKey, params, res => {
+          Server.post(Path.insertSubRouteKey, params, (res) => {
             let { code, data, msg } = res;
             if (code == 200) {
               that.cancelSubFun();
               that.listSubSerpro();
               that.$message.success("操作成功!");
             } else {
-              that.$message.success(msg);
+              that.$message.error(msg);
             }
           });
         }
@@ -367,7 +413,7 @@ export default {
     },
     querySerProByCode() {
       let that = this;
-      Server.post(Path.querySerProByCode, { serProCode: that.id }, res => {
+      Server.post(Path.querySerProByCode, { serProCode: that.id }, (res) => {
         let { code, data, msg, count } = res;
         if (code == 200) {
           // that.serproItem = data;
@@ -391,8 +437,8 @@ export default {
         that.subVisible = true;
         that.subItem.id = row.id;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

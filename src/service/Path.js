@@ -103,7 +103,6 @@ export default {
   "closeRouteByCode": "route/closeRouteByCode", //关闭通道
   "delRouteByCode": "route/delRouteByCode", //删除通道
   "doVerifyCodeSign": "route/doVerifyCodeSign", //签订电子协议
-  "generateMerchantKey": "route/generateMerchantKey", //更新秘钥
   "getElectronicAgreement": "route/getElectronicAgreement", //下载协议
   "getVerifyCode": "route/getVerifyCode", //获取电子协议挑战吗
   "pushForUmPay": "route/pushForUmPay", //联动进件
@@ -137,6 +136,7 @@ export default {
 
 
   "getRouteTemplateList": "key/getRouteTemplateList", // 
+  "saveRouteTemplate": "key/saveRouteTemplate", // 
   "insertRouteKey": "key/insertRouteKey", // 
   "insertSubRouteKey": "key/insertSubRouteKey", // 
 
