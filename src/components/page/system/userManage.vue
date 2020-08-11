@@ -238,12 +238,12 @@ export default {
             url = Path.updUser;
           } else {
             url = Path.addUser;
+            params["serprocode"] = localStorage.getItem("serprocode");
           }
           params["usercode"] = that.userItem.usercode;
           params["username"] = that.userItem.username;
           params["pwd"] = that.userItem.pwd;
           params["rid"] = that.userItem.rid;
-          // params["serprocode"] = localStorage.getItem("serprocode");
           Server.post(url, params, (res) => {
             let { code, data, msg } = res;
             if (code == 200) {

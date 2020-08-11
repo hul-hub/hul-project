@@ -44,7 +44,7 @@ http.interceptors.request.use(function (config) {
 // Add a response interceptor
 http.interceptors.response.use(
   function (response) {
-    // console.log(response);
+    console.log(response);
     // Do something with response data
     if (response.data.code == 40012 || response.data.code == 40006) {
       Message.error(response.data.info)

@@ -152,6 +152,8 @@ export default {
   'hoopayQueryOrder': 'api/hoopay/hoopayQueryOrder',  //订单查询  
   'refund': 'order/refund',  //旧退款
   'hoopayRefundOrder': 'api/hoopay/hoopayRefundOrder',  //退款
+  'exportOrderExcel': 'order/Excel',  //导出
+
 
   // 分账配置
   'addReceive': 'order/Receive/add',  //添加分账接收方

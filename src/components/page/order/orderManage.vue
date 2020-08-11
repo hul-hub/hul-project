@@ -229,51 +229,47 @@ export default {
     // 后台开发人员全部都提出了离职。
     // 我想我也快了把。
     exportExcel() {
-      let that = this;
-      require.ensure([], () => {
-        const { export_json_to_excel } = require("vendor/Export2Excel");
+      Server.postExport(
+        Path.exportOrderExcel,
+        {
+          serprocode: "5922218727791888",
+          reqtransstartdate: "2020-08-01 00:00:00",
+          reqtransenddate: "2020-08-11 23:59:59",
+          paystatus: "SUCCESS",
+        },
+        {
+          responseType: "arraybuffer",
+        },
+        (res) => {
+          let { code, data, info } = res;
+          console.log(res);
 
-        const tHeader = [
-          "商户名称",
-          "商户订单号",
-          "系统订单号",
-          "上游订单号",
-          "交易金额",
-          "支付状态",
-          "支付类型",
-          "交易开始时间",
-          "交易结束时间",
-          "手续费",
-        ];
-
-        const filterVal = [
-          "serproname",
-          "mchOrderid",
-          "hoopayOrderid",
-          "createdate",
-          "orderamount",
-          "paystatus",
-          "paytypecode",
-          "reqtransstartdate",
-          "reqtransenddate",
-          "commission",
-        ];
-        let tList = this.tableData.filter((element, index, self) => {
-          element.paystatus = this.filterOrderStatus(element.paystatus);
-          element.paytypecode =
-            this.filterPaytype(element.paytypecode) +
-            this.filterGetPayWay(element.paywaycode);
-          return element;
-        });
-        console.log(tList);
-        const list = tList;
-        const data = this.formatJson(filterVal, list);
-        console.log(data);
-        export_json_to_excel(tHeader, data, "交易流水记录");
-      });
-    },
-    formatJson(filterVal, jsonData) {
-      return jsonData.map((v) => filterVal.map((j) => v[j]));
+          let blob = new Blob([res], { type: "application/vnd.ms-excel" });
+          if (window.navigator.msSaveOrOpenBlob) {
+            //兼容ie
+            window.navigator.msSaveBlob(blob, file.filename);
+          } else {
+            let downloadElement = document.createElement("a");
+            let href = window.URL.createObjectURL(blob); //创建下载的链接
+            downloadElement.href = href;
+            downloadElement.download =
+              "上课记录" +
+              "(" +
+              me.excelItem.start_time +
+              "/" +
+              me.excelItem.end_time +
+              ").xlsx"; //下载后文件名
+            document.body.appendChild(downloadElement);
+            //点击下载，此写法兼容火狐
+            let evt = document.createEvent("MouseEvents");
+            evt.initEvent("click", false, false);
+            downloadElement.dispatchEvent(evt);
+            document.body.removeChild(downloadElement); // 下载完成移除元素
+            window.URL.revokeObjectURL(href); // 释放掉blob对象
+          }
+          me.cancelExcel();
+        }
+      );
     },
     getSummaries(param) {
       const { columns, data } = param;
