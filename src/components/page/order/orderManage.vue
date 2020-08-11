@@ -77,7 +77,7 @@
                   icon="el-icon-refresh-left"
                   size="small"
                   @click="refreshFun"
-                >重置</el-button>
+                >重 置</el-button>
               </el-row>
             </el-col>
           </el-row>
