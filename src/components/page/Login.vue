@@ -20,7 +20,7 @@
             <span class="input-button" slot="prepend" icon="el-icon-lx-lock">密码</span>
           </el-input>
         </el-form-item>
-        <el-form-item prop="verifyCode">
+        <!-- <el-form-item prop="verifyCode">
           <el-input
             type="text"
             placeholder
@@ -30,7 +30,7 @@
             <span slot="prepend" class="input-button" icon="el-icon-lx-lock">验证码</span>
             <img slot="append" @click="loadVerifyCode" :src="verifyCodeUrl" alt />
           </el-input>
-        </el-form-item>
+        </el-form-item> -->
         <div class="login-btn">
           <el-button type="primary" @click="submitForm()" @keyup.enter.native="submitForm">登录</el-button>
         </div>
@@ -96,8 +96,8 @@ export default {
           let params = {};
           params["usercode"] = that.param.username;
           params["pwd"] = that.param.password;
-          // params["noVerifyCode"] = "1";
-          params["verifyCode"] = that.param.verifyCode;
+          params["noVerifyCode"] = "1";
+          // params["verifyCode"] = that.param.verifyCode;
           Server.post(Path.login, params, (res) => {
             let { code, data, msg, menu, username } = res;
             if (code === "200") {
