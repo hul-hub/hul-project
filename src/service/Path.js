@@ -91,6 +91,10 @@ export default {
   "updStatusByCode": "serpro/updStatusByCode", //更新商户状态
   "updateSubAccountStatusBuId": "serpro/updateSubAccountStatusBuId", //更新子商户状态
   "uploadSerpro": "serpro/upload", //上传/ serpro / upload / { title } / { userCode }
+  "addSerpromgDeviceByCode": "serpro/addSerpromgDeviceByCode", //添加用户绑定设备信息（云喇叭）
+  "delSerpromgDeviceByCode": "serpro/delSerpromgDeviceByCode", // 删除
+  "getSerpromgDevicePage": "serpro/getSerpromgDevicePage", // 设备列表
+  "updateSerpromgDeviceByCode": "serpro/updateSerpromgDeviceByCode", // 修改状态
 
   "querySerproWechatMainByCode": "serpro/querySerproWechatMainByCode", //wx进件
   "wxInitSerpro": "serpro/wxInitSerpro", //wx进件
@@ -139,9 +143,6 @@ export default {
   "saveRouteTemplate": "key/saveRouteTemplate", // 
   "insertRouteKey": "key/insertRouteKey", // 
   "insertSubRouteKey": "key/insertSubRouteKey", // 
-
-
-
 
   // 订单管理
   'makeQRCode': 'order/makeQRCode',  // 订单查询

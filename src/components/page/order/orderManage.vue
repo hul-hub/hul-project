@@ -234,7 +234,6 @@
 import Server from "@/service/request";
 import Path from "@/service/Path";
 import { timestampToTimeHHMMSS } from "@/util/util.js";
-import moment from "moment";
 export default {
   name: "orderManage",
   components: {},
@@ -298,6 +297,9 @@ export default {
   },
 
   methods: {
+    // 今天是2020年7月27日，工资还是没有发，公司的人连个解释都没有。
+    // 后台开发人员全部都提出了离职。
+    // 我想我也快了把。
     cancelExport() {
       let that = this;
       that.exportVisible = false;
@@ -309,9 +311,6 @@ export default {
       };
       that.$refs.exportItem.resetFields();
     },
-    // 今天是2020年7月27日，工资还是没有发，公司的人连个解释都没有。
-    // 后台开发人员全部都提出了离职。
-    // 我想我也快了把。
     exportExcel() {
       let me = this;
       me.$refs.exportItem.validate((valid) => {

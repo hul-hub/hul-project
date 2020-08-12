@@ -120,6 +120,11 @@ export default {
               index: "childMerchant",
               title: "子商户管理",
             },
+            {
+              id: "89",
+              index: "mgDeviceManage",
+              title: "设备管理",
+            },
           ],
         },
         {

@@ -116,6 +116,11 @@ export default new Router({
                     meta: { title: '收银二维码' }
                 },
                 {
+                    path: '/mgDeviceManage',
+                    component: () => import(/* webpackChunkName: "dataSetting" */ '../components/page/merchant/mgDeviceManage.vue'),
+                    meta: { title: '设备管理' }
+                },
+                {
                     path: '/childMerchant',
                     component: () => import(/* webpackChunkName: "dataSetting" */ '../components/page/merchant/childMerchant.vue'),
                     meta: { title: '子商户管理' }
