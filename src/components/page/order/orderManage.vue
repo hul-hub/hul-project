@@ -660,7 +660,7 @@ export default {
   width: 100%;
 }
 
-/deep/ .el-range-separator {
+ .el-range-separator {
   width: 24px !important;
 }
 </style>
