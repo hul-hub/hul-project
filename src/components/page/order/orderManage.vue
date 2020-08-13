@@ -253,7 +253,7 @@ export default {
           sums[index] = "--";
         }
       });
-      console.log(sums);
+      // console.log(sums);
       return sums;
     },
     changePay(arrStr) {
