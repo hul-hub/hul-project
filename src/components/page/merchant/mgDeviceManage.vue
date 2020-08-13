@@ -231,7 +231,7 @@ export default {
             if (code == 200) {
               that.editVisible = false;
               that.loadData();
-              that.$message.success("操作成功!");
+              that.$message.success(msg);
             } else {
               that.$message.error(msg);
             }
