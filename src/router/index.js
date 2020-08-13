@@ -166,6 +166,11 @@ export default new Router({
                     meta: { title: '交易订单汇总' }
                 },
                 {
+                    path: '/orderExport',
+                    component: () => import(/* webpackChunkName: "dataSetting" */ '../components/page/order/orderExport.vue'),
+                    meta: { title: '订单数据导出' }
+                },
+                {
                     path: '/settleOrder',
                     component: () => import(/* webpackChunkName: "dataSetting" */ '../components/page/settle/settleOrder.vue'),
                     meta: { title: '订单结算' }

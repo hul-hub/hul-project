@@ -147,7 +147,7 @@
 import Server from "@/service/request";
 import Path from "@/service/Path";
 export default {
-  name: "cashQrcode",
+  name: "mgDeviceManage",
   components: {},
   data() {
     return {
