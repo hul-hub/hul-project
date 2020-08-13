@@ -42,7 +42,7 @@
             </el-col>
             <el-col :span="6">
               <el-form-item label="交易状态：">
-                <el-select v-model="exportItem.rid" placeholder="请选择" clearable>
+                <el-select v-model="exportItem.paystatus" placeholder="请选择" clearable>
                   <el-option
                     v-for="(item,index) in statusList"
                     :key="index"
