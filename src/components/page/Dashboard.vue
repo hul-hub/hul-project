@@ -11,7 +11,7 @@
       <div class="hot">
         <span style="font-size:14px;font-weight:550;">最新公告</span>
         <img
-          style="    height: 20px;
+          style="height: 20px;
     width: 20px;
     margin-left: 10px;"
           src="../../assets/img/hot.png"

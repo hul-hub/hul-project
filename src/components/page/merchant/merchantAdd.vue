@@ -320,7 +320,7 @@
             </el-row>
             <el-row :gutter="36">
               <el-col :span="8">
-                <el-form-item label="开户许可证:">
+                <el-form-item label="开户许可证:" prop="accountopenimg">
                   <upload-file
                     :param="accountopenimg"
                     :cosImage="shopItem.accountopenimg"
@@ -986,7 +986,8 @@ export default {
         ],
         bodyimg: [{ required: true, message: "请选择门头照" }],
         storecashierphoto: [{ required: true, message: "请选择收银台照片" }],
-        businessimg: [{ required: true, message: "请选择内部经营图片" }]
+        businessimg: [{ required: true, message: "请选择内部经营图片" }],
+        accountopenimg: [{ required: true, message: "请选择开户许可证" }],
       },
       legalItemRules: {
         contactsname: [
