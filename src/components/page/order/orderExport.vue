@@ -53,19 +53,28 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row justify="end" type="flex">
-            <el-button
-              type="primary"
-              icon="el-icon-download"
-              size="small"
-              @click="exportExcel"
-            >导出Excel</el-button>
-            <el-button
-              type="primary"
-              icon="el-icon-refresh-left"
-              size="small"
-              @click="cancelExport"
-            >重置</el-button>
+          <el-row :gutter="36" align="center">
+            <el-col :span="6">
+              <el-form-item class="query-form-item">
+                <span>最多导出一个月数据！</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="18">
+              <el-row justify="end" type="flex">
+                <el-button
+                  type="primary"
+                  icon="el-icon-download"
+                  size="small"
+                  @click="exportExcel"
+                >导出Excel</el-button>
+                <el-button
+                  type="primary"
+                  icon="el-icon-refresh-left"
+                  size="small"
+                  @click="cancelExport"
+                >重置</el-button>
+              </el-row>
+            </el-col>
           </el-row>
         </el-form>
       </el-card>

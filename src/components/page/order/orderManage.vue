@@ -52,6 +52,11 @@
             </el-col>
           </el-row>
           <el-row :gutter="36" align="center">
+            <el-col :span="6">
+              <el-form-item label="用户名称:">
+                <el-input v-model="query.querySubName"></el-input>
+              </el-form-item>
+            </el-col>
             <el-col :span="18">
               <el-form-item label="交易时间:" class="query-form-item">
                 <el-date-picker
@@ -69,17 +74,15 @@
                 ></el-date-picker>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
-              <el-row justify="end" type="flex">
-                <el-button type="primary" icon="el-icon-search" size="small" @click="queryFun">查询</el-button>
-                <el-button
-                  type="primary"
-                  icon="el-icon-refresh-left"
-                  size="small"
-                  @click="refreshFun"
-                >重置</el-button>
-              </el-row>
-            </el-col>
+          </el-row>
+          <el-row justify="end" type="flex">
+            <el-button type="primary" icon="el-icon-search" size="small" @click="queryFun">查询</el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-refresh-left"
+              size="small"
+              @click="refreshFun"
+            >重置</el-button>
           </el-row>
         </el-form>
       </el-card>
@@ -116,12 +119,11 @@
           label="系统订单号"
           align="center"
         ></el-table-column>
-        <!-- <el-table-column prop="createdate" label="上游订单号" align="center"></el-table-column> -->
         <el-table-column
-          prop="subAccount"
-          label="用户账号"
+          prop="subAccountName"
+          label="用户名称"
           :show-overflow-tooltip="true"
-          min-width="110"
+          min-width="140"
           align="center"
         ></el-table-column>
         <el-table-column prop="orderamount" label="交易金额" sortable min-width="110" align="center"></el-table-column>
@@ -194,6 +196,7 @@ export default {
         reqtransstartdate: "",
         reqtransenddate: "",
         mchOrderid: "",
+        querySubName: "",
       },
       pageInfo: {
         pageIndex: 1,
@@ -290,6 +293,7 @@ export default {
         reqtransstartdate: "",
         reqtransenddate: "",
         mchOrderid: "",
+        querySubName: "",
       };
       that.initDate();
       that.pageInfo.pageIndex = 1;
@@ -308,6 +312,7 @@ export default {
       params["reqtransstartdate"] = that.query.reqtransstartdate;
       params["reqtransenddate"] = that.query.reqtransenddate;
       params["mchOrderid"] = that.query.mchOrderid;
+      params["querySubName"] = that.query.querySubName;
       Server.post(Path.orderQueryOrderList, params, (res) => {
         let { code, data, msg, count, orderCount, feerateCount } = res;
         if (code == 200) {
