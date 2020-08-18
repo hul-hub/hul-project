@@ -275,6 +275,11 @@ export default {
               title: "角色管理",
             },
             {
+              id: "94",
+              index: "sceneManage",
+              title: "场景管理",
+            },
+            {
               id: "33",
               index: "dataSetting",
               title: "数据配置",

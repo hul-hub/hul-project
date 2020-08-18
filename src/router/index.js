@@ -31,6 +31,11 @@ export default new Router({
                     meta: { title: '用户管理' }
                 },
                 {
+                    path: '/sceneManage',
+                    component: () => import(/* webpackChunkName: "userManage" */ '../components/page/system/sceneManage.vue'),
+                    meta: { title: '场景管理' }
+                },
+                {
                     path: '/roleManage',
                     component: () => import(/* webpackChunkName: "roleManage" */ '../components/page/system/roleManage.vue'),
                     meta: { title: '角色管理' }

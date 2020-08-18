@@ -35,6 +35,11 @@ export default {
   'resetPwd': 'user/resetPwd',  // 
   'updUser': 'user/updUser',  // 
   'updateStatus': 'user/updateStatus',  // 
+  'addOrdermgVestinMain': 'user/addOrdermgVestinMain',  // 添加桌
+  'delOrdermgVestinMain': 'user/delOrdermgVestinMain',  // 删除桌
+  'getOrdermgVestinMainPage': 'user/getOrdermgVestinMainPage',  // 获取桌
+  'updOrdermgVestinMain': 'user/updOrdermgVestinMain',  // 修改桌
+
 
   // 数据配置
   'addAreaData': 'dataconfig/addAreaData',  // 地区配置
