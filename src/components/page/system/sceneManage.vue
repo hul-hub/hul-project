@@ -32,7 +32,7 @@
           icon="el-icon-circle-plus-outline"
           class="handle-del mr10"
           @click="addFun"
-          v-if="hasPerm('user_create')"
+          v-if="hasPerm('addOrdermgVestinMain')"
         >新增</el-button>
       </div>
       <el-table
@@ -44,33 +44,23 @@
       >
         <el-table-column type="index" width="70" label="序号" align="center"></el-table-column>
         <el-table-column prop="userName" label="用户名称" min-width="100" align="center"></el-table-column>
-        <el-table-column prop="creatdate" label="注册时间" min-width="100" align="center"></el-table-column>
-        <el-table-column label="角色" align="center"></el-table-column>
-        <el-table-column label="用户状态" min-width="100" align="center">
-          <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.status"
-              active-value="1"
-              inactive-value="2"
-              @change="changeSwitch(scope.row.status,scope.row.usercode)"
-            ></el-switch>
-          </template>
-        </el-table-column>
-        <el-table-column prop="createName" label="创建人" align="center"></el-table-column>
+        <el-table-column prop="deskCode" label="桌号" min-width="100" align="center"></el-table-column>
+        <el-table-column prop="deskName" label="桌名" min-width="100" align="center"></el-table-column>
+        <el-table-column prop="deskDesc" label="备注" align="center"></el-table-column>
         <el-table-column label="操作" width="180" align="center">
           <template slot-scope="scope">
             <el-button
               type="primary"
               size="small"
               @click="handleEdit(scope.$index, scope.row)"
-              v-if="hasPerm('user_update')"
+              v-if="hasPerm('updOrdermgVestinMain')"
             >编辑</el-button>
             <el-button
               type="primary"
               size="small"
-              v-if="hasPerm('reset_password')"
-              @click="resetPwd(scope.$index, scope.row)"
-            >重置密码</el-button>
+              v-if="hasPerm('delOrdermgVestinMain')"
+              @click="delFun(scope.$index, scope.row)"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -94,27 +84,32 @@
         v-model="editVisible"
         :closable="false"
         :mask-closable="false"
-        :title="userItem.usercode?'编辑':'新增'"
+        :title="sceneItem.id?'编辑':'新增'"
       >
-        <el-form ref="userItem" :model="userItem" :rules="rules" label-width="110px">
-          <el-form-item label="用户账号：" prop="usercode">
-            <el-input v-model="userItem.usercode" :disabled="haveUsercode"></el-input>
+        <el-form ref="sceneItem" :model="sceneItem" :rules="rules" label-width="110px">
+          <el-form-item label="桌号：" prop="deskCode">
+            <el-input v-model="sceneItem.deskCode"></el-input>
           </el-form-item>
-          <el-form-item label="用户名称：" prop="username">
-            <el-input v-model="userItem.username"></el-input>
+          <el-form-item label="桌名：" prop="deskName">
+            <el-input v-model="sceneItem.deskName"></el-input>
           </el-form-item>
-          <el-form-item label="用户密码：" prop="pwd">
-            <el-input type="password" v-model="userItem.pwd"></el-input>
-          </el-form-item>
-          <el-form-item label="用户角色：" prop="rid">
-            <el-select v-model="userItem.rid" placeholder="请选择" style="width:100%">
+          <el-form-item label="用户名称：" prop="userCode">
+            <el-select
+              v-model="sceneItem.userCode"
+              @change="changeUser"
+              placeholder="请选择"
+              style="width:100%"
+            >
               <el-option
-                v-for="(item,index) in roleList"
+                v-for="(item,index) in userList"
                 :key="index"
-                :label="item.rolename"
-                :value="item.rolecode"
+                :label="item.username"
+                :value="item.usercode"
               ></el-option>
             </el-select>
+          </el-form-item>
+          <el-form-item label="备注：">
+            <el-input v-model="sceneItem.deskDesc"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer">
@@ -133,7 +128,6 @@ export default {
   name: "sceneManage",
   data() {
     return {
-      toSerproList: [],
       query: {
         username: "", //用户名称
       },
@@ -143,106 +137,93 @@ export default {
         total: 0,
       },
       tableData: [],
-      userItem: {
-        usercode: "",
-        username: "",
-        pwd: "",
-        rid: "",
+      sceneItem: {
+        id: "",
+        deskCode: "",
+        deskName: "",
+        deskDesc: "",
+        userCode: "",
+        userName: "",
+        qrcodeUrl: "",
       },
-      roleList: [],
       rules: {
-        usercode: [
-          { required: true, message: "请输入用户账号", trigger: "blur" },
+        deskCode: [
+          { required: true, message: "请输入桌号", trigger: "blur" },
           {
-            pattern: /^\d{10,20}$/,
-            message: "请输入10-20位数字，建议手机号",
+            pattern: /^\d{1,4}$/,
+            message: "请输入1-4位数字",
             trigger: "blur",
           },
         ],
-        username: [
-          { required: true, message: "请输入用户名称", trigger: "blur" },
+        deskName: [{ required: true, message: "请输入桌名", trigger: "blur" }],
+        userCode: [
+          { required: true, message: "请选择用户名称", trigger: "change" },
         ],
-        pwd: [
-          { required: true, message: "请输入用户密码", trigger: "blur" },
-          {
-            min: 6,
-            message: "请输入不小于6位的用户密码",
-            trigger: "blur",
-          },
-        ],
-        rid: [{ required: true, message: "请选择用户角色", trigger: "change" }],
       },
-      multipleSelection: [],
-      delList: [],
+      userList: [],
       editVisible: false,
-      haveUsercode: false,
-      pageTotal: 0,
-      form: {},
-      idx: -1,
-      id: -1,
     };
   },
   created() {
     let that = this;
     that.loadData();
-    // that.loadRoleList();
-    // that.querySerProListByCode();
+    that.loadUserList();
   },
   methods: {
+    changeUser(val) {
+      let that = this;
+      let arr = that.userList.filter((element, index, self) => {
+        return element.usercode == val;
+      });
+      that.sceneItem.userName = arr[0].username;
+    },
     addFun() {
       let that = this;
       that.editVisible = true;
-      that.haveUsercode = false;
-    },
-    querySerProListByCode() {
-      let that = this;
-      let params = {};
-      params["token"] = localStorage.getItem("tokenData");
-      params["serviceType"] = 2;
-      Server.post(Path.querySerProListByCode, params, (res) => {
-        let { code, data, msg, count } = res;
-        if (code == 200) {
-          that.toSerproList = data;
-        }
-      });
     },
     resetUserItem() {
       let that = this;
-      that.userItem = {
-        usercode: "",
-        username: "",
-        pwd: "",
-        rid: "",
+      that.sceneItem = {
+        id: "",
+        deskCode: "",
+        deskName: "",
+        deskDesc: "",
+        userCode: "",
+        userName: "",
+        qrcodeUrl: "",
       };
     },
     cancelEdit() {
       let that = this;
       that.editVisible = false;
       that.resetUserItem();
-      that.$refs.userItem.resetFields();
+      that.$refs.sceneItem.resetFields();
     },
     // 保存编辑
     saveEdit() {
       let that = this;
-      that.$refs.userItem.validate((valid) => {
+      that.$refs.sceneItem.validate((valid) => {
         if (valid) {
           let url = "";
           let params = {};
-          if (that.haveUsercode) {
-            url = Path.updUser;
+          if (that.sceneItem.id) {
+            url = Path.updOrdermgVestinMain;
+            params["id"] = that.sceneItem.id;
           } else {
-            url = Path.addUser;
-            params["serprocode"] = localStorage.getItem("serprocode");
+            url = Path.addOrdermgVestinMain;
           }
-          params["usercode"] = that.userItem.usercode;
-          params["username"] = that.userItem.username;
-          params["pwd"] = that.userItem.pwd;
-          params["rid"] = that.userItem.rid;
+          params["deskCode"] = that.sceneItem.deskCode;
+          params["deskName"] = that.sceneItem.deskName;
+          params["deskDesc"] = that.sceneItem.deskDesc;
+          params["userCode"] = that.sceneItem.userCode;
+          params["userName"] = that.sceneItem.userName;
+          params["qrcodeUrl"] = that.sceneItem.qrcodeUrl;
           Server.post(url, params, (res) => {
             let { code, data, msg } = res;
             if (code == 200) {
               that.editVisible = false;
               that.loadData();
+              that.cancelEdit();
               that.$message.success("操作成功!");
             } else {
               that.$message.error(msg);
@@ -250,20 +231,6 @@ export default {
           });
         }
       });
-    },
-    changeSwitch(status, usercode) {
-      let that = this;
-      Server.post(
-        Path.updateStatus,
-        { status: status, usercode: usercode },
-        (res) => {
-          let { code, data, msg } = res;
-          if (code == 200) {
-            that.$message.success("状态更新成功!");
-            that.loadData();
-          }
-        }
-      );
     },
     queryFun: function () {
       let that = this;
@@ -280,12 +247,15 @@ export default {
       that.pageInfo.pageSize = 10;
       that.loadData();
     },
-    loadRoleList() {
+    loadUserList() {
       let that = this;
-      Server.post(Path.queryRoleList, { page: 1, limit: 999 }, (res) => {
+      let params = {};
+      params["page"] = 1;
+      params["limit"] = 999;
+      Server.post(Path.queryUserList, params, (res) => {
         let { code, data, msg } = res;
         if (code == 200) {
-          that.roleList = data;
+          that.userList = data;
         }
       });
     },
@@ -304,53 +274,35 @@ export default {
       });
     },
     // 删除操作
-    resetPwd(index, row) {
+    delFun(index, row) {
       let that = this;
       that
-        .$confirm(
-          "确定要重置该用户密码吗？点击确定则重置该用户密码！",
-          "重置密码",
-          {
-            type: "warning",
-          }
-        )
+        .$confirm("确定要删除该场景吗？点击确定则删除该选项！", "删除", {
+          type: "warning",
+        })
         .then(() => {
-          Server.post(Path.resetPwd, { usercode: row.usercode }, (res) => {
+          Server.post(Path.delOrdermgVestinMain, { code: row.id }, (res) => {
             let { code, data, msg } = res;
             if (code == 200) {
               that.loadData();
-              that.$message.success("密码重置成功！密码：123456");
+              that.$message.success("删除成功");
+            } else {
+              that.$message.error(msg);
             }
           });
         })
         .catch(() => {});
     },
-    // 多选操作
-    handleSelectionChange(val) {
-      this.multipleSelection = val;
-    },
-    delAllSelection() {
-      const length = this.multipleSelection.length;
-      let str = "";
-      this.delList = this.delList.concat(this.multipleSelection);
-      for (let i = 0; i < length; i++) {
-        str += this.multipleSelection[i].name + " ";
-      }
-      this.$message.error(`删除了${str}`);
-      this.multipleSelection = [];
-    },
     // 编辑操作
     handleEdit(index, row) {
-      // console.log(row);
       let that = this;
-      // that.userItem = row;
-      that.userItem.usercode = row.usercode;
-      that.userItem.username = row.username;
-      that.userItem.pwd = row.pwd;
-      that.userItem.rid = row.roleVo.rolecode;
+      that.sceneItem.id = row.id;
+      that.sceneItem.deskCode = row.deskCode;
+      that.sceneItem.deskName = row.deskName;
+      that.sceneItem.userCode = row.userCode;
+      that.sceneItem.userName = row.userName;
+      that.sceneItem.deskDesc = row.deskDesc;
       that.editVisible = true;
-      that.haveUsercode = true;
-      console.log(that.userItem);
     },
     // 分页导航
     handlePageChange(val) {

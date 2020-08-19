@@ -45,24 +45,15 @@ http.interceptors.request.use(function (config) {
 http.interceptors.response.use(
   function (response) {
     // console.log(response);
-    // Do something with response data
-    if (response.data.code == 40012 || response.data.code == 40006) {
-      Message.error(response.data.info)
+    if (response.data.code == 40012) {
+      Message.error("登录超时，请重新登录！")
       setTimeout(function () {
-        window.localStorage.removeItem("userinfo");
-        window.localStorage.removeItem("key");
+        window.localStorage.removeItem("username");
+        window.localStorage.removeItem("token");
         window.localStorage.removeItem("menuData");
-        // window.location.href = location.origin + "/#/login";
+        window.localStorage.removeItem("serprocode");
+        window.location.href = location.origin + "/#/login";
       }, 1500);
-    } else if (response.data.code == 40004) { // token 失效
-      Message.error("请先登陆")
-      setTimeout(function () {
-        window.localStorage.removeItem("userinfo");
-        window.localStorage.removeItem("key");
-        window.localStorage.removeItem("menuData");
-      }, 1500);
-    }
-    else if (response.data.code == 40002) {
     } else {
       return response.data;
     }
