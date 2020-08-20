@@ -99,7 +99,7 @@ export default {
           params["noVerifyCode"] = "1";
           // params["verifyCode"] = that.param.verifyCode;
           Server.post(Path.login, params, (res) => {
-            let { code, data, msg, menu, username } = res;
+            let { code, data, msg, menu, username,serviceType } = res;
             if (code === "200") {
               // console.log(unescape(username));
               localStorage.setItem("username", unescape(username));
@@ -108,6 +108,7 @@ export default {
               localStorage.setItem("token", "bearer" + data); // 存入head里面请求后天
               localStorage.setItem("tokenData", data); // 某些接口的参数里面需要携带这个参数
               localStorage.setItem("menuData", JSON.stringify(menu)); // 某些接口的参数里面需要携带这个参数
+              localStorage.setItem("serviceType", serviceType); // 1:服务商 2:商户
               // 整理权限
               that.$router.push("/");
             } else {

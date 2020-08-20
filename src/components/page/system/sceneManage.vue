@@ -52,6 +52,12 @@
             <el-button
               type="primary"
               size="small"
+              v-if="hasPerm('delOrdermgVestinMain')"
+              @click="delFun(scope.$index, scope.row)"
+            >导出二维码</el-button>
+            <el-button
+              type="primary"
+              size="small"
               @click="handleEdit(scope.$index, scope.row)"
               v-if="hasPerm('updOrdermgVestinMain')"
             >编辑</el-button>

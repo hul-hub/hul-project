@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container">
+    <div class="container" v-if="serviceType == 2">
       <div class="time">
         <p style="color:#fff;font-size:14px;">
           hello！，上午好！ 欢迎使用胡掌柜云服务管理系统。当前时间为：
@@ -19,7 +19,9 @@
         />
       </div>
       <div>
-        <h2 style="text-align:center;font-weight:400;margin-top:40px;font-size: 26px;">{{noticeItem.noticetitle}}</h2>
+        <h2
+          style="text-align:center;font-weight:400;margin-top:40px;font-size: 26px;"
+        >{{noticeItem.noticetitle}}</h2>
         <div style="text-align:right;font-size: 16px;">
           <span>发布人:{{noticeItem.creatername}}</span>&nbsp;&nbsp;
           <span>发布时间:{{noticeItem.createdate}}</span>
@@ -33,59 +35,61 @@
         <div v-html="noticeItem.noticecontent" style="margin-left: 75px;font-size: 16px;"></div>
       </div>
     </div>
-    <!-- <div class="search">
-      <el-card class="box-card">
-        <div class="content-head">
-          <div class="content-head-head">
-            <div>
-              <img src="@/assets/img/service_total.png" alt />
-            </div>
-            <div>
+    <div v-if="serviceType == 1">
+      <div class="search">
+        <el-card class="box-card">
+          <div class="content-head">
+            <div class="content-head-head">
               <div>
-                <p class="head-title">服务商总数</p>
-                <p class="head-foot">{{totalItem.serviceTotal}}</p>
+                <img src="@/assets/img/service_total.png" alt />
+              </div>
+              <div>
+                <div>
+                  <p class="head-title">服务商总数</p>
+                  <p class="head-foot">{{totalItem.serviceTotal}}</p>
+                </div>
+              </div>
+            </div>
+            <div class="content-head-head">
+              <div>
+                <img src="@/assets/img/mer_total.png" alt />
+              </div>
+              <div>
+                <div>
+                  <p class="head-title">商户总数</p>
+                  <p class="head-foot">{{totalItem.merTotal}}</p>
+                </div>
+              </div>
+            </div>
+            <div class="content-head-head" style="border-right:0;">
+              <div>
+                <img src="@/assets/img/user_total.png" alt />
+              </div>
+              <div>
+                <div>
+                  <p class="head-title">用户总数</p>
+                  <p class="head-foot">{{totalItem.userTotal}}</p>
+                </div>
               </div>
             </div>
           </div>
-          <div class="content-head-head">
-            <div>
-              <img src="@/assets/img/mer_total.png" alt />
-            </div>
-            <div>
-              <div>
-                <p class="head-title">商户总数</p>
-                <p class="head-foot">{{totalItem.merTotal}}</p>
-              </div>
-            </div>
-          </div>
-          <div class="content-head-head" style="border-right:0;">
-            <div>
-              <img src="@/assets/img/user_total.png" alt />
-            </div>
-            <div>
-              <div>
-                <p class="head-title">用户总数</p>
-                <p class="head-foot">{{totalItem.userTotal}}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </el-card>
+        </el-card>
+      </div>
+      <div class="dash-content">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-card shadow="hover">
+              <schart ref="bar" class="schart" canvasId="bar" :options="options"></schart>
+            </el-card>
+          </el-col>
+          <el-col :span="12">
+            <el-card shadow="hover">
+              <schart ref="line" class="schart" canvasId="line" :options="options2"></schart>
+            </el-card>
+          </el-col>
+        </el-row>
+      </div>
     </div>
-    <div class="dash-content">
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <el-card shadow="hover">
-            <schart ref="bar" class="schart" canvasId="bar" :options="options"></schart>
-          </el-card>
-        </el-col>
-        <el-col :span="12">
-          <el-card shadow="hover">
-            <schart ref="line" class="schart" canvasId="line" :options="options2"></schart>
-          </el-card>
-        </el-col>
-      </el-row>
-    </div>-->
   </div>
 </template>
 
@@ -108,6 +112,7 @@ export default {
       noticeItem: {},
       nowTime: "",
       week: "",
+      serviceType: 2,
     };
   },
   components: {
@@ -115,11 +120,15 @@ export default {
   },
   created() {
     let that = this;
-    // that.loadUser();
-    // that.loadData();
-    // that.initWeekData();
-    that.nowTimes();
-    that.loadNotice();
+    that.serviceType = localStorage.getItem("serviceType");
+    if (that.serviceType == 1) {
+      that.loadUser();
+      that.loadData();
+      that.initWeekData();
+    } else {
+      that.nowTimes();
+      that.loadNotice();
+    }
   },
   computed: {},
   methods: {
@@ -206,6 +215,18 @@ export default {
         let { code, data, msg } = res;
         if (code == 200) {
           that.noticeItem = data[0];
+        }
+      });
+    },
+    loadUser() {
+      let that = this;
+      let params = {};
+      params["page"] = 1;
+      params["limit"] = 999;
+      Server.post(Path.queryUserList, params, (res) => {
+        let { code, data, msg } = res;
+        if (code == 200) {
+          that.totalItem.userTotal = data.length;
         }
       });
     },
@@ -343,5 +364,9 @@ export default {
 .dash-content {
   margin-top: 20px;
   margin-bottom: 60px;
+}
+.schart {
+  width: 100%;
+  height: 300px;
 }
 </style>

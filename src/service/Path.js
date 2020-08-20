@@ -39,6 +39,7 @@ export default {
   'delOrdermgVestinMain': 'user/delOrdermgVestinMain',  // 删除桌
   'getOrdermgVestinMainPage': 'user/getOrdermgVestinMainPage',  // 获取桌
   'updOrdermgVestinMain': 'user/updOrdermgVestinMain',  // 修改桌
+  'deskMakeQRCode': 'order/deskMakeQRCode',  // 修改桌
 
 
   // 数据配置
