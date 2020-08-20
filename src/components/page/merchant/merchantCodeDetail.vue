@@ -164,10 +164,10 @@
           <el-form-item label="商户密钥：" prop="routesecretkey">
             <el-input v-model="templateItem.routesecretkey"></el-input>
           </el-form-item>
-          <el-form-item label="appId：" prop="appid">
+          <el-form-item label="appId：">
             <el-input v-model="templateItem.appid"></el-input>
           </el-form-item>
-          <el-form-item label="openId：" prop="openid">
+          <el-form-item label="openId：">
             <el-input v-model="templateItem.openid"></el-input>
           </el-form-item>
         </el-form>
@@ -229,8 +229,6 @@ export default {
         routesecretkey: [
           { required: true, message: "请输入商户密钥", trigger: "blur" },
         ],
-        appid: [{ required: true, message: "请输入appId", trigger: "blur" }],
-        openid: [{ required: true, message: "请输入openId", trigger: "blur" }],
       },
       subItemRules: {
         routeSecretKey: [
@@ -289,7 +287,7 @@ export default {
           if (data.length > 0) {
             for (let item of data) {
               // console.log(item);
-              if(item.templatecode == "12"){
+              if (item.templatecode == "12") {
                 that.temItem.routeid = item.routeId;
               }
             }
@@ -342,7 +340,7 @@ export default {
       params["templatecode"] = "12";
       params["serprocode"] = that.id;
       params["routeid"] = that.temItem.routeid;
-      
+
       Server.post(Path.saveRouteTemplate, params, (res) => {
         let { code, data, msg } = res;
         if (code == 200) {
