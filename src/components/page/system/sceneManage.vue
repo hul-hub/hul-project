@@ -47,13 +47,12 @@
         <el-table-column prop="deskCode" label="桌号" min-width="100" align="center"></el-table-column>
         <el-table-column prop="deskName" label="桌名" min-width="100" align="center"></el-table-column>
         <el-table-column prop="deskDesc" label="备注" align="center"></el-table-column>
-        <el-table-column label="操作" width="180" align="center">
+        <el-table-column label="操作" width="280" align="center">
           <template slot-scope="scope">
             <el-button
               type="primary"
               size="small"
-              v-if="hasPerm('delOrdermgVestinMain')"
-              @click="delFun(scope.$index, scope.row)"
+              @click="exportDeskQrcode(scope.$index, scope.row)"
             >导出二维码</el-button>
             <el-button
               type="primary"
@@ -123,6 +122,18 @@
           <el-button type="primary" @click="saveEdit">确 定</el-button>
         </div>
       </Modal>
+      <Modal v-model="qrcodeVisible" :closable="false" :mask-closable="false" title="导出二维码">
+        <div>
+          <el-row type="flex" justify="center">
+            <div id="qrCode" ref="qrCodeDiv">
+              <img :src="qrcodeUrl" alt />
+            </div>
+          </el-row>
+        </div>
+        <div slot="footer">
+          <el-button type="primary" @click="cancelFun">取 消</el-button>
+        </div>
+      </Modal>
     </template>
   </div>
 </template>
@@ -168,6 +179,8 @@ export default {
       },
       userList: [],
       editVisible: false,
+      qrcodeVisible: false,
+      qrcodeUrl: "",
     };
   },
   created() {
@@ -298,6 +311,20 @@ export default {
           });
         })
         .catch(() => {});
+    },
+    cancelFun() {
+      let that = this;
+      that.qrcodeVisible = false;
+      that.qrcodeUrl = "";
+    },
+    exportDeskQrcode(index, row) {
+      let that = this;
+      Server.post(Path.deskMakeQRCode, { deskId: row.id }, (res) => {
+        that.qrcodeUrl = res;
+        that.qrcodeVisible = true;
+      }).catch((error) => {
+        that.$message.error(error.response.data);
+      });
     },
     // 编辑操作
     handleEdit(index, row) {
