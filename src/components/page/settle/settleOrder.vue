@@ -245,7 +245,7 @@ export default {
       let that = this;
       Server.post(
         Path.querySerProListByCode,
-        { token: localStorage.getItem("tokenData"), serviceType: "2" },
+        { token: localStorage.getItem("tokenData"), serviceType: "1" },
         res => {
           let { code, data, msg } = res;
           if (code == 200) {

@@ -17,7 +17,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="服务商名称:">
+              <el-form-item label="商户名称:">
                 <el-input v-model="query.serProName"></el-input>
               </el-form-item>
             </el-col>
@@ -218,7 +218,7 @@ export default {
       let that = this;
       let params = {};
       params["token"] = localStorage.getItem("tokenData");
-      params["serviceType"] = 2;
+      params["serviceType"] = 1;
       Server.post(Path.querySerProListByCode, params, res => {
         let { code, data, msg, count } = res;
         if (code == 200) {
