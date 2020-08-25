@@ -127,7 +127,7 @@
           align="center"
         ></el-table-column>
         <el-table-column prop="orderamount" label="交易金额" sortable min-width="110" align="center"></el-table-column>
-        <el-table-column prop="commission" label="手续费" sortable min-width="100" align="center"></el-table-column>
+        <el-table-column prop="commissiondown" label="手续费" sortable min-width="100" align="center"></el-table-column>
         <el-table-column label="交易状态" min-width="95" align="center">
           <template slot-scope="scope">
             <span>{{scope.row.paystatus | filterOrderStatus}}</span>
