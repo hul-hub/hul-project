@@ -6,7 +6,7 @@
           <el-row :gutter="36" align="center">
             <el-col :span="6">
               <el-form-item label="所属商户:">
-                <el-select v-model="query.querySerprocode" placeholder="请选择" style="width:100%">
+                <el-select v-model="query.querySerprocode" filterable placeholder="请选择" style="width:100%">
                   <el-option
                     v-for="(item,index) in toSerproList"
                     :key="index"
