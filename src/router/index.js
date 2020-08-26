@@ -31,6 +31,11 @@ export default new Router({
                     meta: { title: '用户管理' }
                 },
                 {
+                    path: '/shopManage',
+                    component: () => import(/* webpackChunkName: "shopManage" */ '../components/page/system/shopManage.vue'),
+                    meta: { title: '门店管理' }
+                },
+                {
                     path: '/sceneManage',
                     component: () => import(/* webpackChunkName: "userManage" */ '../components/page/system/sceneManage.vue'),
                     meta: { title: '场景管理' }

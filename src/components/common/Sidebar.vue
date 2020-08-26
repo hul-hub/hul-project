@@ -284,6 +284,11 @@ export default {
               index: "dataSetting",
               title: "数据配置",
             },
+            {
+              id: "98",
+              index: "shopManage",
+              title: "门店管理",
+            },
           ],
         },
         {

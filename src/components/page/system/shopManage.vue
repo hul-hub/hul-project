@@ -5,8 +5,8 @@
         <el-form :model="query" label-width="80px" label-position="left" size="small">
           <el-row :gutter="36" align="center">
             <el-col :span="6">
-              <el-form-item label="用户名称:" class="query-form-item">
-                <el-input v-model="query.username"></el-input>
+              <el-form-item label="门店名称:" class="query-form-item">
+                <el-input v-model="query.remark"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="18">
@@ -42,17 +42,16 @@
         ref="multipleTable"
         header-cell-class-name="table-header"
       >
-        <!-- 今天7.24号，工资还没有发下来。 -->
         <el-table-column type="index" width="70" label="序号" align="center"></el-table-column>
-        <el-table-column prop="usercode" label="用户账号" min-width="120" align="center"></el-table-column>
-        <el-table-column prop="username" label="用户名称" min-width="100" align="center"></el-table-column>
+        <el-table-column prop="usercode" label="门店账号" min-width="120" align="center"></el-table-column>
+        <el-table-column prop="remark" label="门店名称" min-width="100" align="center"></el-table-column>
         <el-table-column prop="creatdate" label="注册时间" min-width="100" align="center"></el-table-column>
         <el-table-column label="角色" align="center">
           <template slot-scope="scope">
             <span>{{scope.row.roleVo.rolename}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="用户状态" min-width="100" align="center">
+        <el-table-column label="门店状态" min-width="100" align="center">
           <template slot-scope="scope">
             <el-switch
               v-model="scope.row.status"
@@ -103,17 +102,17 @@
         :title="userItem.usercode?'编辑':'新增'"
       >
         <el-form ref="userItem" :model="userItem" :rules="rules" label-width="110px">
-          <el-form-item label="用户账号：" prop="usercode">
+          <el-form-item label="门店账号：" prop="usercode">
             <el-input v-model="userItem.usercode" :disabled="haveUsercode"></el-input>
           </el-form-item>
-          <el-form-item label="用户名称：" prop="username">
-            <el-input v-model="userItem.username"></el-input>
+          <el-form-item label="门店名称：" prop="remark">
+            <el-input v-model="userItem.remark"></el-input>
           </el-form-item>
-          <el-form-item label="用户密码：" prop="pwd">
+          <el-form-item label="门店密码：" prop="pwd">
             <el-input type="password" v-model="userItem.pwd"></el-input>
           </el-form-item>
-          <el-form-item label="用户角色：" prop="rid">
-            <el-select v-model="userItem.rid" placeholder="请选择" style="width:100%">
+          <el-form-item label="门店角色：">
+            <el-select v-model="userItem.rid" disabled style="width:100%">
               <el-option
                 v-for="(item,index) in roleList"
                 :key="index"
@@ -136,12 +135,12 @@
 import Server from "@/service/request";
 import Path from "@/service/Path";
 export default {
-  name: "userManage",
+  name: "shopManage",
   data() {
     return {
       toSerproList: [],
       query: {
-        username: "", //用户名称
+        remark: "", //门店名称
       },
       pageInfo: {
         pageIndex: 1,
@@ -151,32 +150,32 @@ export default {
       tableData: [],
       userItem: {
         usercode: "",
-        username: "",
+        remark: "",
         pwd: "",
         rid: "",
       },
       roleList: [],
       rules: {
         usercode: [
-          { required: true, message: "请输入用户账号", trigger: "blur" },
+          { required: true, message: "请输入门店账号", trigger: "blur" },
           {
             pattern: /^\d{10,20}$/,
             message: "请输入10-20位数字，建议手机号",
             trigger: "blur",
           },
         ],
-        username: [
-          { required: true, message: "请输入用户名称", trigger: "blur" },
+        remark: [
+          { required: true, message: "请输入门店名称", trigger: "blur" },
         ],
         pwd: [
-          { required: true, message: "请输入用户密码", trigger: "blur" },
+          { required: true, message: "请输入门店密码", trigger: "blur" },
           {
             min: 6,
-            message: "请输入不小于6位的用户密码",
+            message: "请输入不小于6位的门店密码",
             trigger: "blur",
           },
         ],
-        rid: [{ required: true, message: "请选择用户角色", trigger: "change" }],
+        rid: [{ required: true, message: "请选择门店角色", trigger: "change" }],
       },
       multipleSelection: [],
       delList: [],
@@ -216,7 +215,7 @@ export default {
       let that = this;
       that.userItem = {
         usercode: "",
-        username: "",
+        remark: "",
         pwd: "",
         rid: "",
       };
@@ -241,7 +240,7 @@ export default {
             params["serprocode"] = localStorage.getItem("serprocode");
           }
           params["usercode"] = that.userItem.usercode;
-          params["username"] = that.userItem.username;
+          params["remark"] = that.userItem.remark;
           params["pwd"] = that.userItem.pwd;
           params["rid"] = that.userItem.rid;
           Server.post(url, params, (res) => {
@@ -280,7 +279,7 @@ export default {
     refreshFun: function () {
       let that = this;
       that.query = {
-        username: "",
+        remark: "",
       };
       that.pageInfo.pageIndex = 1;
       that.pageInfo.pageSize = 10;
@@ -292,6 +291,11 @@ export default {
         let { code, data, msg } = res;
         if (code == 200) {
           that.roleList = data;
+          for(let item of that.roleList){
+            if(item.rolecode == "1446628027777"){ // 莫吐槽，没发工资，今天8月26号了。上个月的工资还没发。
+              that.userItem.rid = item.rolecode;
+            }
+          }
         }
       });
     },
@@ -300,8 +304,8 @@ export default {
       let params = {};
       params["page"] = that.pageInfo.pageIndex;
       params["limit"] = that.pageInfo.pageSize;
-      params["username"] = that.query.username;
-      params["userType"] = "1";
+      params["remark"] = that.query.remark;
+      params["userType"] = "2"; // 用户：1 门店：2
       Server.post(Path.queryUserList, params, (res) => {
         let { code, data, msg, count } = res;
         if (code == 200) {
@@ -315,7 +319,7 @@ export default {
       let that = this;
       that
         .$confirm(
-          "确定要重置该用户密码吗？点击确定则重置该用户密码！",
+          "确定要重置该门店密码吗？点击确定则重置该门店密码！",
           "重置密码",
           {
             type: "warning",
@@ -352,7 +356,7 @@ export default {
       let that = this;
       // that.userItem = row;
       that.userItem.usercode = row.usercode;
-      that.userItem.username = row.username;
+      that.userItem.remark = row.remark;
       that.userItem.pwd = row.pwd;
       that.userItem.rid = row.roleVo.rolecode;
       that.editVisible = true;
