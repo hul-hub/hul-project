@@ -46,11 +46,6 @@
         <el-table-column prop="usercode" label="门店账号" min-width="120" align="center"></el-table-column>
         <el-table-column prop="remark" label="门店名称" min-width="100" align="center"></el-table-column>
         <el-table-column prop="creatdate" label="注册时间" min-width="100" align="center"></el-table-column>
-        <el-table-column label="角色" align="center">
-          <template slot-scope="scope">
-            <span>{{scope.row.roleVo.rolename}}</span>
-          </template>
-        </el-table-column>
         <el-table-column label="门店状态" min-width="100" align="center">
           <template slot-scope="scope">
             <el-switch
@@ -241,6 +236,7 @@ export default {
           }
           params["usercode"] = that.userItem.usercode;
           params["remark"] = that.userItem.remark;
+          params["username"] = that.userItem.remark;
           params["pwd"] = that.userItem.pwd;
           params["rid"] = that.userItem.rid;
           Server.post(url, params, (res) => {
