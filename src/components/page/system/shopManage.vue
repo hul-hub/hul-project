@@ -185,12 +185,13 @@ export default {
   created() {
     let that = this;
     that.loadData();
-    that.loadRoleList();
     that.querySerProListByCode();
   },
   methods: {
     addFun() {
       let that = this;
+      that.resetUserItem();
+      that.loadRoleList();
       that.editVisible = true;
       that.haveUsercode = false;
     },
@@ -234,7 +235,7 @@ export default {
             url = Path.addUser;
             params["serprocode"] = localStorage.getItem("serprocode");
           }
-          params["type"] = "2"; //1 用户 2 店铺
+          params["type"] = "2"; // 2:门店 ，3 用户
           params["usercode"] = that.userItem.usercode;
           params["remark"] = that.userItem.remark;
           params["username"] = that.userItem.remark;
@@ -288,8 +289,9 @@ export default {
         let { code, data, msg } = res;
         if (code == 200) {
           that.roleList = data;
-          for(let item of that.roleList){
-            if(item.rolecode == "1446628027777"){ // 莫吐槽，没发工资，今天8月26号了。上个月的工资还没发。
+          for (let item of that.roleList) {
+            if (item.rolecode == "1446628027777") {
+              // 莫吐槽，没发工资，今天8月26号了。上个月的工资还没发。
               that.userItem.rid = item.rolecode;
             }
           }

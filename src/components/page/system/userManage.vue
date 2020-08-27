@@ -241,7 +241,7 @@ export default {
             params["serprocode"] = localStorage.getItem("serprocode");
           }
           params["usercode"] = that.userItem.usercode;
-          params["type"] = "1";
+          params["type"] = "3";// 2:门店 ，3 用户
           params["username"] = that.userItem.username;
           params["pwd"] = that.userItem.pwd;
           params["rid"] = that.userItem.rid;
