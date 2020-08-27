@@ -241,7 +241,7 @@ export default {
             params["serprocode"] = localStorage.getItem("serprocode");
           }
           params["usercode"] = that.userItem.usercode;
-          params["type"] = "3";// 2:门店 ，3 用户
+          params["type"] = "3"; // 2:门店 ，3 用户
           params["username"] = that.userItem.username;
           params["pwd"] = that.userItem.pwd;
           params["rid"] = that.userItem.rid;
@@ -250,6 +250,7 @@ export default {
             if (code == 200) {
               that.editVisible = false;
               that.loadData();
+              that.resetUserItem();
               that.$message.success("操作成功!");
             } else {
               that.$message.error(msg);
