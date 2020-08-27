@@ -234,6 +234,7 @@ export default {
             url = Path.addUser;
             params["serprocode"] = localStorage.getItem("serprocode");
           }
+          params["type"] = "2"; //1 用户 2 店铺
           params["usercode"] = that.userItem.usercode;
           params["remark"] = that.userItem.remark;
           params["username"] = that.userItem.remark;

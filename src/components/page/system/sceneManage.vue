@@ -5,7 +5,7 @@
         <el-form :model="query" label-width="80px" label-position="left" size="small">
           <el-row :gutter="36" align="center">
             <el-col :span="6">
-              <el-form-item label="用户名称:" class="query-form-item">
+              <el-form-item label="店铺名称:" class="query-form-item">
                 <el-input v-model="query.username"></el-input>
               </el-form-item>
             </el-col>
@@ -43,9 +43,14 @@
         header-cell-class-name="table-header"
       >
         <el-table-column type="index" width="70" label="序号" align="center"></el-table-column>
-        <el-table-column prop="userName" label="用户名称" min-width="100" align="center"></el-table-column>
-        <el-table-column prop="deskCode" label="桌号" min-width="100" align="center"></el-table-column>
-        <el-table-column prop="deskName" label="桌名" min-width="100" align="center"></el-table-column>
+        <el-table-column prop="userName" label="店铺名称" min-width="100" align="center"></el-table-column>
+         <el-table-column label="类型" min-width="100" align="center">
+           <template slot-scope="scope">
+            <span>{{scope.row.deskType == 1 ?'桌台':'包厢'}}</span>
+          </template>
+         </el-table-column>
+        <el-table-column prop="deskName" label="名称" min-width="100" align="center"></el-table-column>
+        <el-table-column prop="deskCode" label="编号" min-width="100" align="center"></el-table-column>
         <el-table-column prop="deskDesc" label="备注" align="center"></el-table-column>
         <el-table-column label="操作" width="280" align="center">
           <template slot-scope="scope">
@@ -92,13 +97,27 @@
         :title="sceneItem.id?'编辑':'新增'"
       >
         <el-form ref="sceneItem" :model="sceneItem" :rules="rules" label-width="110px">
-          <el-form-item label="桌号：" prop="deskCode">
+          <el-form-item label="类型：" prop="deskType">
+            <el-select
+              v-model="sceneItem.deskType"
+              placeholder="请选择"
+              style="width:100%"
+            >
+              <el-option
+                v-for="(item,index) in deskTypeList"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="编号：" prop="deskCode">
             <el-input v-model="sceneItem.deskCode"></el-input>
           </el-form-item>
-          <el-form-item label="桌名：" prop="deskName">
+          <el-form-item label="名称：" prop="deskName">
             <el-input v-model="sceneItem.deskName"></el-input>
           </el-form-item>
-          <el-form-item label="用户名称：" prop="userCode">
+          <el-form-item label="店铺名称：" prop="userCode">
             <el-select
               v-model="sceneItem.userCode"
               @change="changeUser"
@@ -146,8 +165,12 @@ export default {
   data() {
     return {
       query: {
-        username: "", //用户名称
+        username: "", //店铺名称
       },
+      deskTypeList:[
+        {label:"桌台",value:"1"},
+        {label:"包厢",value:"2"},
+      ],
       pageInfo: {
         pageIndex: 1,
         pageSize: 10,
@@ -156,6 +179,7 @@ export default {
       tableData: [],
       sceneItem: {
         id: "",
+        deskType:"", // 1:桌台子 2：包厢
         deskCode: "",
         deskName: "",
         deskDesc: "",
@@ -165,16 +189,19 @@ export default {
       },
       rules: {
         deskCode: [
-          { required: true, message: "请输入桌号", trigger: "blur" },
+          { required: true, message: "请输入编号", trigger: "blur" },
           {
             pattern: /^\d{1,4}$/,
             message: "请输入1-4位数字",
             trigger: "blur",
           },
         ],
-        deskName: [{ required: true, message: "请输入桌名", trigger: "blur" }],
+        deskName: [{ required: true, message: "请输入名称", trigger: "blur" }],
         userCode: [
-          { required: true, message: "请选择用户名称", trigger: "change" },
+          { required: true, message: "请选择店铺名称", trigger: "change" },
+        ],
+        deskType: [
+          { required: true, message: "请选择类型", trigger: "change" },
         ],
       },
       userList: [],
@@ -204,6 +231,7 @@ export default {
       let that = this;
       that.sceneItem = {
         id: "",
+        deskType:"", // 1:桌台子 2：包厢
         deskCode: "",
         deskName: "",
         deskDesc: "",
@@ -231,6 +259,7 @@ export default {
           } else {
             url = Path.addOrdermgVestinMain;
           }
+          params["deskType"] = that.sceneItem.deskType;
           params["deskCode"] = that.sceneItem.deskCode;
           params["deskName"] = that.sceneItem.deskName;
           params["deskDesc"] = that.sceneItem.deskDesc;
@@ -271,6 +300,7 @@ export default {
       let params = {};
       params["page"] = 1;
       params["limit"] = 999;
+      params["userType"] = "2";
       Server.post(Path.queryUserList, params, (res) => {
         let { code, data, msg } = res;
         if (code == 200) {
@@ -330,6 +360,7 @@ export default {
     handleEdit(index, row) {
       let that = this;
       that.sceneItem.id = row.id;
+      that.sceneItem.deskType = row.deskType;
       that.sceneItem.deskCode = row.deskCode;
       that.sceneItem.deskName = row.deskName;
       that.sceneItem.userCode = row.userCode;
