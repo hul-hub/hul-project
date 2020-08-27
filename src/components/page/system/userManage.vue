@@ -302,7 +302,7 @@ export default {
       params["page"] = that.pageInfo.pageIndex;
       params["limit"] = that.pageInfo.pageSize;
       params["username"] = that.query.username;
-      params["userType"] = "1";
+      params["userType"] = "3";
       Server.post(Path.queryUserList, params, (res) => {
         let { code, data, msg, count } = res;
         if (code == 200) {

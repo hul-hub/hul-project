@@ -304,7 +304,7 @@ export default {
       params["page"] = that.pageInfo.pageIndex;
       params["limit"] = that.pageInfo.pageSize;
       params["remark"] = that.query.remark;
-      params["userType"] = "2"; // 用户：1 门店：2
+      params["userType"] = "2"; // 用户：3 门店：2
       Server.post(Path.queryUserList, params, (res) => {
         let { code, data, msg, count } = res;
         if (code == 200) {
