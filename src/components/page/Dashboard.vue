@@ -1,7 +1,7 @@
 <template>
   <div>
-    <!-- <div class="container" v-if="serviceType == 2"> -->
-    <div class="container">
+    <div class="container" v-if="serviceType == 2">
+      <!-- <div class="container"> -->
       <div class="time">
         <p style="color:#fff;font-size:14px;">
           hello！，上午好！ 欢迎使用胡掌柜云服务管理系统。当前时间为：
@@ -36,7 +36,7 @@
         <div v-html="noticeItem.noticecontent" style="margin-left: 75px;font-size: 16px;"></div>
       </div>
     </div>
-    <!-- <div v-if="serviceType == 1">
+    <div v-if="serviceType == 1">
       <div class="search">
         <el-card class="box-card">
           <div class="content-head">
@@ -90,7 +90,7 @@
           </el-col>
         </el-row>
       </div>
-    </div>-->
+    </div>
   </div>
 </template>
 
@@ -121,15 +121,15 @@ export default {
   },
   created() {
     let that = this;
-    // that.serviceType = localStorage.getItem("serviceType");
-    // if (that.serviceType == 1) {
-    //   that.loadUser();
-    //   that.loadData();
-    //   that.initWeekData();
-    // } else {
-    that.nowTimes();
-    that.loadNotice();
-    // }
+    that.serviceType = localStorage.getItem("serviceType");
+    if (that.serviceType == 1) {
+      that.loadUser();
+      that.loadData();
+      that.initWeekData();
+    } else {
+      that.nowTimes();
+      that.loadNotice();
+    }
   },
   computed: {},
   methods: {

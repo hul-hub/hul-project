@@ -108,7 +108,7 @@ export default {
               localStorage.setItem("token", "bearer" + data); // 存入head里面请求后天
               localStorage.setItem("tokenData", data); // 某些接口的参数里面需要携带这个参数
               localStorage.setItem("menuData", JSON.stringify(menu)); // 某些接口的参数里面需要携带这个参数
-              // localStorage.setItem("serviceType", serviceType); // 1:服务商 2:商户
+              localStorage.setItem("serviceType", serviceType); // 1:服务商 2:商户
               // 整理权限
               that.$router.push("/");
             } else {
