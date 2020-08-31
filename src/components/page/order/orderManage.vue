@@ -250,7 +250,7 @@ export default {
             }
           }, 0);
           sums[index] = this.orderCount + " 元";
-        } else if (column.property === "commission") {
+        } else if (column.property === "commissiondown") {
           sums[index] = this.feerateCount + " 元";
         } else {
           sums[index] = "--";
