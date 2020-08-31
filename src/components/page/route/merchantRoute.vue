@@ -586,7 +586,7 @@ export default {
               let moreRoute = {};
               moreRoute["otherfeeid"] = that.routeItem.routecode;
               moreRoute["parameter"] = item.parameter;
-              moreRoute["feerateD"] = item.feerateD;
+              moreRoute["feerateD"] = item.downfeerateD;
               moreRoute["downfeerateD"] = item.downfeerateD1;
               arr.push(moreRoute);
             }
