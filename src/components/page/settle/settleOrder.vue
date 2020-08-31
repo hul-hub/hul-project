@@ -66,8 +66,8 @@
           align="center"
         ></el-table-column>
         <el-table-column prop="orderamount" label="交易金额" min-width="95" align="center"></el-table-column>
-        <el-table-column prop="feerate" label="商户费率" min-width="95" align="center"></el-table-column>
-        <el-table-column prop="feeratedown" label="服务商费率" min-width="110" align="center"></el-table-column>
+        <el-table-column prop="feeratedown" label="商户费率" min-width="95" align="center"></el-table-column>
+        <el-table-column prop="feerate" label="服务商费率" min-width="110" align="center"></el-table-column>
         <el-table-column prop="framount" label="分润金额" min-width="95" align="center"></el-table-column>
         <el-table-column prop="endframount" label="最终分润金额" min-width="120" align="center"></el-table-column>
         <el-table-column prop="flag1" label="备注" min-width="120" align="center"></el-table-column>
