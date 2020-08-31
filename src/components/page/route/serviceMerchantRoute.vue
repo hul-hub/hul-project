@@ -472,8 +472,8 @@ export default {
               oMore["otherfeeid"] = moreItem.otherfeeid;
               oMore["parameter"] = moreItem.parameter;
               // 成本费率为上游的下游费率
-              oMore["feerateD"] = moreItem.feerateD;
-              oMore["downfeerateD"] = moreItem.downfeerateD;
+              oMore["feerateD"] = moreItem.feerateD; //成本费率
+              oMore["downfeerateD"] = moreItem.downfeerateD; // 下发费率
               arr.push(oMore);
             }
             params["datas"] = JSON.stringify(arr);
@@ -586,8 +586,8 @@ export default {
               let moreRoute = {};
               moreRoute["otherfeeid"] = that.routeItem.routecode;
               moreRoute["parameter"] = item.parameter;
-              moreRoute["feerateD"] = item.feerateD;
-              moreRoute["downfeerateD"] = item.downfeerateD1;
+              moreRoute["feerateD"] = item.downfeerateD; // 成本费率是查询的下发费率
+              moreRoute["downfeerateD"] = item.downfeerateD1; // 下发费率
               arr.push(moreRoute);
             }
             params["routeRateList"] = arr;
